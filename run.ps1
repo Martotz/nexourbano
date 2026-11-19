@@ -25,7 +25,7 @@ function DC {
     # La salida pasa por el pipeline para que Start-Transcript la registre; docker escribe progreso en
     # stderr, así que acá no se corta por eso: se mira el código de salida.
     $prev = $ErrorActionPreference; $ErrorActionPreference = "Continue"
-    & docker compose @PROFILES @args 2>&1 | ForEach-Object { "$_" } | Out-Host
+    & docker compose @PROFILES @args 2>&1 | ForEach-Object { Write-Host "$_" }
     $code = $LASTEXITCODE
     $ErrorActionPreference = $prev
     if ($code -ne 0) { throw "docker compose $($args -join ' ') terminó con código $code" }
@@ -46,7 +46,7 @@ function Esperar([string[]]$servicios) { DC up -d --wait @servicios }
 function Setup {
     Titulo "Docker"
     $prev = $ErrorActionPreference; $ErrorActionPreference = "Continue"
-    docker info --format "Docker {{.ServerVersion}} - {{.NCPU}} CPU - {{.MemTotal}} bytes de RAM para contenedores" 2>&1 | Out-Host
+    docker info --format "Docker {{.ServerVersion}} - {{.NCPU}} CPU - {{.MemTotal}} bytes de RAM para contenedores" 2>&1 | ForEach-Object { Write-Host "$_" }
     $code = $LASTEXITCODE; $ErrorActionPreference = $prev
     if ($code -ne 0) { throw "Docker Desktop no está corriendo." }
 
@@ -60,8 +60,8 @@ function Setup {
             Set-Content -Encoding ascii .env
     }
 
-    Titulo "Construyendo imágenes (la primera vez tarda ~10 min)"
-    DC build tools hadoop-edge
+    Titulo "Construyendo la imagen tools (la primera vez tarda ~10 min)"
+    DC build tools
 
     Titulo "Servicios base"
     Esperar @("mysql", "mongo", "minio", "tools")
@@ -91,7 +91,13 @@ function S1-Lake {
     EnTools "python 02-azure-datalake/subir_bronze.py --destino $dest" "s1/datalake.log"
 }
 
+function Build-Hadoop {
+    Titulo "Construyendo la imagen hadoop-edge (Pig + Flume)"
+    DC build hadoop-edge
+}
+
 function S2-Up {
+    Build-Hadoop
     Titulo "Levantando Hadoop (namenode, datanode, yarn, edge, hive, hbase)"
     DC up -d namenode datanode resourcemanager nodemanager hadoop-edge hive hbase
 }
@@ -132,6 +138,7 @@ function S4-Producto { Titulo "M14 · Producto: 5 preguntas"; EnTools "python 09
 
 $PASOS = [ordered]@{
     "setup"       = { Setup }
+    "build.hadoop" = { Build-Hadoop }
     "s1.ecobici"  = { S1-EcoBici }; "s1.perfilado" = { S1-Perfilado }; "s1.ingesta" = { S1-Ingesta }; "s1.lake" = { S1-Lake }
     "s2.up"       = { S2-Up }; "s2.bootstrap" = { S2-Bootstrap }; "s2.hdfs" = { S2-Hdfs }; "s2.wordcount" = { S2-WordCount }
     "s2.hbase"    = { S2-HBase }; "s2.hive" = { S2-Hive }; "s2.pig" = { S2-Pig }; "s2.jdbc" = { S2-Jdbc }; "s2.flume" = { S2-Flume }
