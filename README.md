@@ -25,7 +25,7 @@ Si PowerShell bloquea el script: `Set-ExecutionPolicy -Scope Process Bypass` en 
 
 | Servicio | URL / puerto | Perfil |
 |---|---|---|
-| MySQL (CRM) | `localhost:3306`, base `crm` | base |
+| MySQL (CRM) | `localhost:3307`, base `crm` | base |
 | MongoDB | `mongodb://localhost:27017` | base |
 | MinIO consola | http://localhost:9001 | base |
 | Spark UI (mientras corre un job) | http://localhost:4040 | base (`tools`) |
