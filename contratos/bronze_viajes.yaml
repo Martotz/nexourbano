@@ -1,0 +1,50 @@
+# Contrato Bronze — viajes NexoUrbano (squad 2002)
+# Columnas alineadas con data/viajes.csv generado con --seed 2002.
+# Actualizar umbrales de "calidad" con lo medido en 01-discovery/perfilado.py.
+
+dataset: bronze_viajes
+version: 0.1.0
+owner: squad_platform        # TODO: nombre del owner (ver ADR/000-contexto.md)
+grano: un viaje (ride_id)
+timezone: UTC                # timestamps ISO-8601 con offset +00:00
+formato: csv
+encoding: utf-8
+separador: ","
+particionado: ts_start (yyyy/mm/dd) en el Data Lake -> bronze/viajes/yyyy/mm/dd/
+clave_primaria: ride_id
+frescura_sla: batch diario 06:00 ART
+fuentes:
+  - generador sintético tools/generar_datos.py --seed 2002 --n-viajes 250000
+  - dataset abierto de movilidad (TODO: URL + fecha de descarga)
+
+columnas:
+  - {nombre: ride_id,       tipo: string,    nullable: false, ejemplo: T0000000}
+  - {nombre: ts_start,      tipo: timestamp, nullable: false}
+  - {nombre: ts_end,        tipo: timestamp, nullable: false}
+  - {nombre: duration_s,    tipo: int,       nullable: false}
+  - {nombre: rider_id,      tipo: string,    nullable: false, fk: riders.rider_id}
+  - {nombre: vehicle_id,    tipo: string,    nullable: false, fk: vehiculos.vehicle_id}
+  - {nombre: station_start, tipo: string,    nullable: false, fk: estaciones.station_id}
+  - {nombre: station_end,   tipo: string,    nullable: false, fk: estaciones.station_id}
+  - {nombre: barrio_start,  tipo: string,    nullable: true}
+  - {nombre: barrio_end,    tipo: string,    nullable: true}
+  - {nombre: lat_start,     tipo: double,    nullable: true, rango: [-35.0, -34.4]}
+  - {nombre: lon_start,     tipo: double,    nullable: true, rango: [-58.6, -58.2]}
+  - {nombre: lat_end,       tipo: double,    nullable: true, rango: [-35.0, -34.4]}
+  - {nombre: lon_end,       tipo: double,    nullable: true, rango: [-58.6, -58.2]}
+  - {nombre: km,            tipo: float,     nullable: true}
+  - {nombre: fare_ars,      tipo: float,     nullable: true}
+  - {nombre: clima_codigo,  tipo: int,       nullable: true, nota: "código WMO (Open-Meteo weathercode)"}
+
+reglas_rechazo_silver:
+  - duration_s < 30
+  - duration_s > 14400
+  - ts_end < ts_start
+  - station_start o station_end nulos
+  - fare_ars < 0
+  - km = 0 con duration_s > 600   # distancia nula sospechosa (M7 Pig)
+
+calidad:
+  nulos_max_pct: 2           # TODO: ajustar post-perfilado
+  duplicados_ride_id: 0
+  late_data_horas: 24

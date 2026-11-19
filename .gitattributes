@@ -1,0 +1,8 @@
+# Finales de línea LF en todo el repo (scripts .sh/.cql/.cypher deben correr dentro de contenedores Linux)
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.parquet binary
+
+# Datos del generador: se versionan tal cual (el módulo csv de Python escribe CRLF)
+data/** -text

@@ -1,0 +1,30 @@
+# Secretos
+.env
+*.pem
+*.key
+
+# Datos grandes: se regeneran con tools/generar_datos.py --seed 2002
+# (el enunciado pide versionar solo muestras < 20 MB)
+data/viajes.csv
+
+# Salidas de Spark / Delta / Parquet locales
+spark-warehouse/
+metastore_db/
+derby.log
+**/_output/
+*.parquet
+*.crc
+_delta_log/
+
+# Python / notebooks
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

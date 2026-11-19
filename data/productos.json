@@ -1,0 +1,722 @@
+[
+  {
+    "sku": "SKU001",
+    "nombre": "Pase 1",
+    "categoria": "pase",
+    "tags": [
+      "noche",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 5990,
+      "Cordoba": 1890
+    },
+    "stock": {
+      "Buenos Aires": 35,
+      "Cordoba": 53
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU002",
+    "nombre": "Pase 2",
+    "categoria": "pase",
+    "tags": [
+      "pro",
+      "estudiante"
+    ],
+    "precios": {
+      "Buenos Aires": 14990,
+      "Cordoba": 5790
+    },
+    "stock": {
+      "Buenos Aires": 88,
+      "Cordoba": 32
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU003",
+    "nombre": "Pase 3",
+    "categoria": "pase",
+    "tags": [
+      "pro",
+      "urbano"
+    ],
+    "precios": {
+      "Buenos Aires": 5990,
+      "Cordoba": 3290
+    },
+    "stock": {
+      "Buenos Aires": 305,
+      "Cordoba": 87
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU004",
+    "nombre": "Pase 4",
+    "categoria": "pase",
+    "tags": [
+      "pro",
+      "estudiante"
+    ],
+    "precios": {
+      "Buenos Aires": 14990,
+      "Cordoba": 3290
+    },
+    "stock": {
+      "Buenos Aires": 167,
+      "Cordoba": 33
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU005",
+    "nombre": "Pase 5",
+    "categoria": "pase",
+    "tags": [
+      "estudiante",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 14990,
+      "Cordoba": 5790
+    },
+    "stock": {
+      "Buenos Aires": 164,
+      "Cordoba": 96
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU006",
+    "nombre": "Pase 6",
+    "categoria": "pase",
+    "tags": [
+      "noche",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 9990,
+      "Cordoba": 1890
+    },
+    "stock": {
+      "Buenos Aires": 270,
+      "Cordoba": 49
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU007",
+    "nombre": "Pase 7",
+    "categoria": "pase",
+    "tags": [
+      "noche",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 3490,
+      "Cordoba": 9790
+    },
+    "stock": {
+      "Buenos Aires": 387,
+      "Cordoba": 26
+    },
+    "activo": false
+  },
+  {
+    "sku": "SKU008",
+    "nombre": "Pase 8",
+    "categoria": "pase",
+    "tags": [
+      "noche",
+      "pro"
+    ],
+    "precios": {
+      "Buenos Aires": 1990,
+      "Cordoba": 1890
+    },
+    "stock": {
+      "Buenos Aires": 309,
+      "Cordoba": 32
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU009",
+    "nombre": "Pase 9",
+    "categoria": "pase",
+    "tags": [
+      "lluvia",
+      "noche"
+    ],
+    "precios": {
+      "Buenos Aires": 14990,
+      "Cordoba": 9790
+    },
+    "stock": {
+      "Buenos Aires": 151,
+      "Cordoba": 26
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU010",
+    "nombre": "Pase 10",
+    "categoria": "pase",
+    "tags": [
+      "estudiante",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 3490,
+      "Cordoba": 1890
+    },
+    "stock": {
+      "Buenos Aires": 357,
+      "Cordoba": 44
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU011",
+    "nombre": "Recarga 1",
+    "categoria": "recarga",
+    "tags": [
+      "lluvia",
+      "urbano"
+    ],
+    "precios": {
+      "Buenos Aires": 9990,
+      "Cordoba": 9790
+    },
+    "stock": {
+      "Buenos Aires": 383,
+      "Cordoba": 107
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU012",
+    "nombre": "Recarga 2",
+    "categoria": "recarga",
+    "tags": [
+      "urbano",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 5990,
+      "Cordoba": 3290
+    },
+    "stock": {
+      "Buenos Aires": 227,
+      "Cordoba": 93
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU013",
+    "nombre": "Recarga 3",
+    "categoria": "recarga",
+    "tags": [
+      "urbano",
+      "estudiante"
+    ],
+    "precios": {
+      "Buenos Aires": 5990,
+      "Cordoba": 3290
+    },
+    "stock": {
+      "Buenos Aires": 268,
+      "Cordoba": 29
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU014",
+    "nombre": "Recarga 4",
+    "categoria": "recarga",
+    "tags": [
+      "estudiante",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 9990,
+      "Cordoba": 1890
+    },
+    "stock": {
+      "Buenos Aires": 0,
+      "Cordoba": 0
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU015",
+    "nombre": "Recarga 5",
+    "categoria": "recarga",
+    "tags": [
+      "urbano",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 3490,
+      "Cordoba": 3290
+    },
+    "stock": {
+      "Buenos Aires": 99,
+      "Cordoba": 105
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU016",
+    "nombre": "Recarga 6",
+    "categoria": "recarga",
+    "tags": [
+      "pro",
+      "noche"
+    ],
+    "precios": {
+      "Buenos Aires": 14990,
+      "Cordoba": 9790
+    },
+    "stock": {
+      "Buenos Aires": 348,
+      "Cordoba": 51
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU017",
+    "nombre": "Recarga 7",
+    "categoria": "recarga",
+    "tags": [
+      "estudiante",
+      "noche"
+    ],
+    "precios": {
+      "Buenos Aires": 3490,
+      "Cordoba": 9790
+    },
+    "stock": {
+      "Buenos Aires": 328,
+      "Cordoba": 59
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU018",
+    "nombre": "Recarga 8",
+    "categoria": "recarga",
+    "tags": [
+      "estudiante",
+      "urbano"
+    ],
+    "precios": {
+      "Buenos Aires": 5990,
+      "Cordoba": 9790
+    },
+    "stock": {
+      "Buenos Aires": 32,
+      "Cordoba": 119
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU019",
+    "nombre": "Recarga 9",
+    "categoria": "recarga",
+    "tags": [
+      "pro",
+      "noche"
+    ],
+    "precios": {
+      "Buenos Aires": 5990,
+      "Cordoba": 5790
+    },
+    "stock": {
+      "Buenos Aires": 338,
+      "Cordoba": 19
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU020",
+    "nombre": "Recarga 10",
+    "categoria": "recarga",
+    "tags": [
+      "noche",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 1990,
+      "Cordoba": 3290
+    },
+    "stock": {
+      "Buenos Aires": 101,
+      "Cordoba": 88
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU021",
+    "nombre": "Accesorio 1",
+    "categoria": "accesorio",
+    "tags": [
+      "lluvia",
+      "estudiante"
+    ],
+    "precios": {
+      "Buenos Aires": 9990,
+      "Cordoba": 5790
+    },
+    "stock": {
+      "Buenos Aires": 77,
+      "Cordoba": 108
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU022",
+    "nombre": "Accesorio 2",
+    "categoria": "accesorio",
+    "tags": [
+      "lluvia",
+      "estudiante"
+    ],
+    "precios": {
+      "Buenos Aires": 1990,
+      "Cordoba": 9790
+    },
+    "stock": {
+      "Buenos Aires": 270,
+      "Cordoba": 78
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU023",
+    "nombre": "Accesorio 3",
+    "categoria": "accesorio",
+    "tags": [
+      "urbano",
+      "noche"
+    ],
+    "precios": {
+      "Buenos Aires": 5990,
+      "Cordoba": 3290
+    },
+    "stock": {
+      "Buenos Aires": 141,
+      "Cordoba": 24
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU024",
+    "nombre": "Accesorio 4",
+    "categoria": "accesorio",
+    "tags": [
+      "urbano",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 1990,
+      "Cordoba": 1890
+    },
+    "stock": {
+      "Buenos Aires": 306,
+      "Cordoba": 86
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU025",
+    "nombre": "Accesorio 5",
+    "categoria": "accesorio",
+    "tags": [
+      "lluvia",
+      "noche"
+    ],
+    "precios": {
+      "Buenos Aires": 9990,
+      "Cordoba": 3290
+    },
+    "stock": {
+      "Buenos Aires": 36,
+      "Cordoba": 12
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU026",
+    "nombre": "Accesorio 6",
+    "categoria": "accesorio",
+    "tags": [
+      "pro",
+      "noche"
+    ],
+    "precios": {
+      "Buenos Aires": 14990,
+      "Cordoba": 5790
+    },
+    "stock": {
+      "Buenos Aires": 227,
+      "Cordoba": 0
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU027",
+    "nombre": "Accesorio 7",
+    "categoria": "accesorio",
+    "tags": [
+      "pro",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 14990,
+      "Cordoba": 1890
+    },
+    "stock": {
+      "Buenos Aires": 63,
+      "Cordoba": 113
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU028",
+    "nombre": "Accesorio 8",
+    "categoria": "accesorio",
+    "tags": [
+      "estudiante",
+      "pro"
+    ],
+    "precios": {
+      "Buenos Aires": 14990,
+      "Cordoba": 3290
+    },
+    "stock": {
+      "Buenos Aires": 356,
+      "Cordoba": 14
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU029",
+    "nombre": "Accesorio 9",
+    "categoria": "accesorio",
+    "tags": [
+      "pro",
+      "noche"
+    ],
+    "precios": {
+      "Buenos Aires": 9990,
+      "Cordoba": 5790
+    },
+    "stock": {
+      "Buenos Aires": 152,
+      "Cordoba": 49
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU030",
+    "nombre": "Accesorio 10",
+    "categoria": "accesorio",
+    "tags": [
+      "urbano",
+      "estudiante"
+    ],
+    "precios": {
+      "Buenos Aires": 1990,
+      "Cordoba": 1890
+    },
+    "stock": {
+      "Buenos Aires": 308,
+      "Cordoba": 49
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU031",
+    "nombre": "Seguro 1",
+    "categoria": "seguro",
+    "tags": [
+      "lluvia",
+      "noche"
+    ],
+    "precios": {
+      "Buenos Aires": 5990,
+      "Cordoba": 5790
+    },
+    "stock": {
+      "Buenos Aires": 143,
+      "Cordoba": 56
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU032",
+    "nombre": "Seguro 2",
+    "categoria": "seguro",
+    "tags": [
+      "urbano",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 9990,
+      "Cordoba": 5790
+    },
+    "stock": {
+      "Buenos Aires": 66,
+      "Cordoba": 15
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU033",
+    "nombre": "Seguro 3",
+    "categoria": "seguro",
+    "tags": [
+      "pro",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 5990,
+      "Cordoba": 3290
+    },
+    "stock": {
+      "Buenos Aires": 291,
+      "Cordoba": 61
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU034",
+    "nombre": "Seguro 4",
+    "categoria": "seguro",
+    "tags": [
+      "estudiante",
+      "lluvia"
+    ],
+    "precios": {
+      "Buenos Aires": 5990,
+      "Cordoba": 5790
+    },
+    "stock": {
+      "Buenos Aires": 39,
+      "Cordoba": 73
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU035",
+    "nombre": "Seguro 5",
+    "categoria": "seguro",
+    "tags": [
+      "lluvia",
+      "noche"
+    ],
+    "precios": {
+      "Buenos Aires": 3490,
+      "Cordoba": 1890
+    },
+    "stock": {
+      "Buenos Aires": 268,
+      "Cordoba": 47
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU036",
+    "nombre": "Seguro 6",
+    "categoria": "seguro",
+    "tags": [
+      "estudiante",
+      "pro"
+    ],
+    "precios": {
+      "Buenos Aires": 3490,
+      "Cordoba": 5790
+    },
+    "stock": {
+      "Buenos Aires": 272,
+      "Cordoba": 32
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU037",
+    "nombre": "Seguro 7",
+    "categoria": "seguro",
+    "tags": [
+      "urbano",
+      "noche"
+    ],
+    "precios": {
+      "Buenos Aires": 3490,
+      "Cordoba": 5790
+    },
+    "stock": {
+      "Buenos Aires": 341,
+      "Cordoba": 66
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU038",
+    "nombre": "Seguro 8",
+    "categoria": "seguro",
+    "tags": [
+      "noche",
+      "estudiante"
+    ],
+    "precios": {
+      "Buenos Aires": 1990,
+      "Cordoba": 5790
+    },
+    "stock": {
+      "Buenos Aires": 128,
+      "Cordoba": 11
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU039",
+    "nombre": "Seguro 9",
+    "categoria": "seguro",
+    "tags": [
+      "estudiante",
+      "pro"
+    ],
+    "precios": {
+      "Buenos Aires": 14990,
+      "Cordoba": 9790
+    },
+    "stock": {
+      "Buenos Aires": 2,
+      "Cordoba": 67
+    },
+    "activo": true
+  },
+  {
+    "sku": "SKU040",
+    "nombre": "Seguro 10",
+    "categoria": "seguro",
+    "tags": [
+      "urbano",
+      "estudiante"
+    ],
+    "precios": {
+      "Buenos Aires": 5990,
+      "Cordoba": 9790
+    },
+    "stock": {
+      "Buenos Aires": 146,
+      "Cordoba": 35
+    },
+    "activo": true
+  }
+]

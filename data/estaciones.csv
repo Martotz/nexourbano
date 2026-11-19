@@ -1,0 +1,25 @@
+station_id,nombre,barrio,lat,lon,capacidad
+ST000,Estacion Palermo 0,Palermo,-34.585501,-58.381577,28
+ST001,Estacion Recoleta 1,Recoleta,-34.598575,-58.351159,17
+ST002,Estacion San Telmo 2,San Telmo,-34.595831,-58.421465,16
+ST003,Estacion Belgrano 3,Belgrano,-34.564978,-58.396948,10
+ST004,Estacion Caballito 4,Caballito,-34.639509,-58.359722,19
+ST005,Estacion Almagro 5,Almagro,-34.641565,-58.420379,13
+ST006,Estacion Villa Crespo 6,Villa Crespo,-34.595898,-58.359232,27
+ST007,Estacion Nunez 7,Nunez,-34.602487,-58.375662,20
+ST008,Estacion Colegiales 8,Colegiales,-34.586517,-58.386348,8
+ST009,Estacion Retiro 9,Retiro,-34.623262,-58.363193,25
+ST010,Estacion Microcentro 10,Microcentro,-34.575877,-58.347844,27
+ST011,Estacion Chacarita 11,Chacarita,-34.641983,-58.346566,26
+ST012,Estacion Palermo 12,Palermo,-34.617587,-58.400668,20
+ST013,Estacion Recoleta 13,Recoleta,-34.615115,-58.371646,11
+ST014,Estacion San Telmo 14,San Telmo,-34.620555,-58.390455,23
+ST015,Estacion Belgrano 15,Belgrano,-34.608884,-58.346141,24
+ST016,Estacion Caballito 16,Caballito,-34.633209,-58.407832,9
+ST017,Estacion Almagro 17,Almagro,-34.601624,-58.372479,17
+ST018,Estacion Villa Crespo 18,Villa Crespo,-34.632013,-58.402988,25
+ST019,Estacion Nunez 19,Nunez,-34.592793,-58.358524,8
+ST020,Estacion Colegiales 20,Colegiales,-34.626159,-58.416349,24
+ST021,Estacion Retiro 21,Retiro,-34.593044,-58.358984,18
+ST022,Estacion Microcentro 22,Microcentro,-34.618038,-58.372367,8
+ST023,Estacion Chacarita 23,Chacarita,-34.602445,-58.4097,27
