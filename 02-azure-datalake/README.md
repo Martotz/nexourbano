@@ -2,7 +2,7 @@
 
 ## Azure (cuenta Azure for Students)
 1. Portal → *Storage accounts* → *Create*. Suscripción: Azure for Students · Resource group `rg-nexourbano` ·
-   nombre `nexourbano2002` (o similar, único global) · región **Brazil South** (o East US, más barata) ·
+   nombre `nexourbano2002` (o similar, único global) · región **Chile Central** (la política de la suscripción de estudiante rechazó Brazil South y East US; ver ADR 001) ·
    *Performance* Standard · *Redundancy* **LRS**.
 2. Pestaña *Advanced* → **Enable hierarchical namespace** = ✔ (esto la convierte en ADLS Gen2).
 3. Crear contenedores `bronze`, `silver`, `gold` (o dejar que los cree el script).

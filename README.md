@@ -62,7 +62,7 @@ Disk image location) a otra unidad antes de `setup`. En la máquina del squad qu
 | `08-neo4j/` | M13 | `prep_grafo.py`, `grafo.cypher`, `queries.cypher` |
 | `09-producto/` | M14 | `decision_ops.py` → `decision_ops.md`, `ventas_agg.json` |
 | `contratos/` | — | data contracts Bronze, Silver y Gold |
-| `ADR/` | — | 7 decisiones (000–006) |
+| `ADR/` | — | 8 decisiones (000–007) |
 | `evidence/` | — | logs de cada comando (los escribe `run.ps1`) y capturas |
 | `docker/`, `docker-compose.yml`, `run.ps1` | — | infraestructura |
 | `tools/` | — | generador, helper común, replay del stream |
