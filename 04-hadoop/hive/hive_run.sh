@@ -5,6 +5,7 @@ set -uo pipefail
 LOG=/nexo/evidence/hadoop/hive_nexo.log
 exec > >(tee "$LOG") 2>&1
 NN=hdfs://namenode:8020
+export PATH="$PATH:${HADOOP_HOME:-/opt/hadoop}/bin"   # cliente hdfs que trae la imagen de Hive
 BL="beeline -u jdbc:hive2://localhost:10000/ -n hive --showHeader=true --outputformat=table2"
 run() { echo; echo "\$ $*"; "$@"; }
 

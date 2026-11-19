@@ -2,6 +2,7 @@
 # M7 · Ejecuta clean_viajes.pig sobre HDFS (MapReduce en YARN). Corre en hadoop-edge.
 #   docker compose exec -T hadoop-edge bash /nexo/04-hadoop/pig/pig_run.sh
 set -uo pipefail
+export HADOOP_HOME="${HADOOP_HOME:-/opt/hadoop}" HADOOP_CONF_DIR="${HADOOP_CONF_DIR:-/opt/hadoop/etc/hadoop}"
 LOG=/nexo/evidence/hadoop/pig.log
 exec > >(tee "$LOG") 2>&1
 run() { echo; echo "\$ $*"; "$@"; }

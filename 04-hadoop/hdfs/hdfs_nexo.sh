@@ -2,6 +2,7 @@
 # M5 · Práctica HDFS sobre datos de NexoUrbano. Corre en hadoop-edge.
 #   docker compose exec -T hadoop-edge bash /nexo/04-hadoop/hdfs/hdfs_nexo.sh
 set -euo pipefail
+export HADOOP_HOME="${HADOOP_HOME:-/opt/hadoop}" HADOOP_CONF_DIR="${HADOOP_CONF_DIR:-/opt/hadoop/etc/hadoop}"
 LOG=/nexo/evidence/hadoop/hdfs_nexo.log
 exec > >(tee "$LOG") 2>&1
 run() { echo; echo "\$ $*"; "$@"; }

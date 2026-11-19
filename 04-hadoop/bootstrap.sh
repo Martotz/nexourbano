@@ -2,6 +2,7 @@
 # M4 · Bootstrap del sandbox Hadoop. Corre en el contenedor hadoop-edge.
 #   docker compose exec -T hadoop-edge bash /nexo/04-hadoop/bootstrap.sh
 set -uo pipefail
+export HADOOP_HOME="${HADOOP_HOME:-/opt/hadoop}" HADOOP_CONF_DIR="${HADOOP_CONF_DIR:-/opt/hadoop/etc/hadoop}"
 LOG=/nexo/evidence/hadoop/bootstrap.log
 exec > >(tee "$LOG") 2>&1
 run() { echo; echo "\$ $*"; "$@"; }
