@@ -25,7 +25,7 @@ Si PowerShell bloquea el script: `Set-ExecutionPolicy -Scope Process Bypass` en 
 
 | Servicio | URL / puerto | Perfil |
 |---|---|---|
-| MySQL (CRM) | `localhost:3307`, base `crm` | base |
+| MySQL (CRM) | `localhost:3307` (3307 para no chocar con un MySQL local), base `crm` | base |
 | MongoDB | `mongodb://localhost:27017` | base |
 | MinIO consola | http://localhost:9001 | base |
 | Spark UI (mientras corre un job) | http://localhost:4040 | base (`tools`) |
@@ -36,10 +36,17 @@ Si PowerShell bloquea el script: `Set-ExecutionPolicy -Scope Process Bypass` en 
 
 **RAM:** `run.ps1 s4` apaga Hadoop antes de levantar Cassandra y Neo4j, así entra en 8 GB asignados a Docker.
 
+**Disco:** las imágenes ocupan ~16 GB. Si C: es chico, mover el disco de Docker (Docker Desktop → Settings → VM resources →
+Disk image location) a otra unidad antes de `setup`. En la máquina del squad quedó en `D:\DockerData`.
+
+**Sin escribir en la terminal:** doble clic en `tools\lanzar.cmd` corre los pasos escritos en `tools\paso.txt`
+(por ejemplo `s2` o `s2.pig s2.flume`) y graba la consola en `evidence\_consola\`.
+
 ## Data Lake
 
-- Azure: `abfss://bronze@<cuenta>.dfs.core.windows.net/viajes/yyyy/mm/dd/viajes.csv` ← **TODO pegar la URI real**
-- MinIO (plan B, mismo layout): `s3a://bronze/viajes/yyyy/mm/dd/viajes.csv`
+- Azure (cuenta `nexourbano2002`, Chile Central): `abfss://bronze@nexourbano2002.dfs.core.windows.net/viajes/2026/11/19/viajes.csv`
+- MinIO (espejo local, mismo layout): `s3a://bronze/viajes/2026/11/19/viajes.csv`
+- Listados: `evidence/azure/listado_azure.log`, `evidence/azure/listado_minio.log`
 
 ## Estructura
 
@@ -82,6 +89,23 @@ Video: **TODO link** — guion:
 | Kafka | 8.2 (opcional) | `ADR/005-ingesta-streaming.md` |
 
 No se recortó el millón de filas (8.4) ni Azure real (8.5).
+
+## Resultados de la corrida completa (2026-11-19)
+
+| Módulo | Resultado | Evidencia |
+|---|---|---|
+| M1 | EcoBici 2026: 2 247 697 viajes perfilados; sintético 1 M | `01-discovery/perfilado/` |
+| M2 | 167,7 MB en `bronze/viajes/2026/11/19/` (Azure + MinIO) | `evidence/azure/` |
+| M3 | Open-Meteo 6 624 horas-estación, Mastodon 506 posts → 3 tablas Silver | `evidence/s1/ingesta_local.log` |
+| M5 | `viajes.csv` en 2 bloques (128 MB + 33 MB), HEALTHY; WordCount top 20 | `evidence/hadoop/`, `04-hadoop/mapreduce/top20_terminos.tsv` |
+| M6 | HBase 80 vehículos + scan mantenimiento; Hive 1 000 000 → 979 827, 92 particiones; DROP externa conserva el CSV, interna lo borra | `evidence/hadoop/hbase_nexo.log`, `hive_nexo.log` |
+| M7 | Pig `(979827, 40890)` = mismo resultado que Spark; JDBC 120 riders → HDFS; Flume 200/200 líneas | `evidence/hadoop/pig.log`, `riders_jdbc.log`, `flume.log` |
+| M8 | Delta: 979 818 en Silver, 91 días en Gold, explain con poda de particiones + broadcast (90 s) | `evidence/spark/job_gold.log`, `05-spark/batch/explain.txt` |
+| M9 | 77 ventanas, 4 alertas; evento 5 min tarde descartado (`numRowsDroppedByWatermark = 4`) | `evidence/spark/streaming.log` |
+| M10–M11 | Índice: 4 000 → 482 docs examinados; pipeline → `ventas_agg.json`; `$geoNear` | `evidence/mongodb/` |
+| M12 | 6 000 lecturas; `PER PARTITION LIMIT 1`; 2 queries anti-patrón rechazadas | `evidence/cassandra/cassandra.log` |
+| M13 | 154 nodos, 1 047 relaciones; camino R0001→R0055→R0099; recomendaciones; 2 triángulos VIAJO_CON | `evidence/neo4j/neo4j.log` |
+| M14 | 5 preguntas respondidas cruzando 6 fuentes | `09-producto/decision_ops.md` |
 
 ## Limitaciones conocidas (honestidad de datos)
 

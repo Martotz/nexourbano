@@ -254,9 +254,11 @@ def p5(spark):
     for linea in wc.read_text(encoding="utf-8").splitlines():
         palabra, _, n = linea.rpartition("\t")
         conteos[palabra] = conteos.get(palabra, 0) + int(n)
+    # Solo las 8 etiquetas del sistema de tickets; los hashtags de Mastodon (#buenosaires, ...) no son tickets
+    etiquetas = ["#bateria", "#freno", "#app", "#cobro", "#gps", "#candado", "#pago", "#rueda"]
     cobro = conteos.get("#cobro", 0)
     pago = conteos.get("#pago", 0)
-    tickets = sum(n for p, n in conteos.items() if p.startswith("#"))
+    tickets = sum(conteos.get(e, 0) for e in etiquetas)
     out(f"\nWordCount sobre {tickets:,} tickets etiquetados: **#cobro = {cobro:,}** ({100*cobro/tickets:.1f} %), "
         f"#pago = {pago:,} ({100*pago/tickets:.1f} %).")
     out(f"\nRelación: **{cobro / (total / 1e6):.2f} tickets de cobro por cada millón de ARS facturado** "

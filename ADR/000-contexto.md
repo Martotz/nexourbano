@@ -1,9 +1,10 @@
 # ADR 000 — Contexto del squad
 
 - Ciudad de operación: **Buenos Aires**
-- Dataset abierto de movilidad: **EcoBici — recorridos realizados**, Buenos Aires Data
-  (https://data.buenosaires.gob.ar/dataset/bicicletas-publicas). URL exacta del archivo y fecha de descarga:
-  `data/abierto/MANIFIESTO_ecobici.json` (lo escribe `01-discovery/descargar_ecobici.py`).
+- Dataset abierto de movilidad: **EcoBici — recorridos realizados 2026**, Buenos Aires Data
+  (https://data.buenosaires.gob.ar/dataset/bicicletas-publicas).
+  Archivo: https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2026.zip
+  — descargado el 2026-11-19 (2 247 697 filas). Manifiesto: `data/abierto/MANIFIESTO_ecobici.json`.
 - Semilla `--seed`: **2002** (número de grupo ficticio; **confirmar con la cátedra antes de entregar**)
 - Datos: `python tools/generar_datos.py --seed 2002 --n-viajes 1000000` (objetivo de 1 M de filas de M8, sin recorte)
 - Integrantes: Gabriel Donoso, Julián Spinedi, Agustín Martínez
