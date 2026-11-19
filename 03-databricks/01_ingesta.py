@@ -199,16 +199,26 @@ def bluesky(q, limit=100):
              p["record"].get("text", ""), p["uri"], p["author"]["handle"]) for p in r.json().get("posts", [])]
 
 
-crudo = []
+crudo, no_accesibles = [], []
 for tag in P["tags_social"].split(","):
-    lote = mastodon(tag.strip())
-    print(f"mastodon #{tag}: {len(lote)} posts")
-    crudo += lote
+    try:
+        lote = mastodon(tag.strip())
+        print(f"mastodon #{tag}: {len(lote)} posts")
+        crudo += lote
+    except requests.exceptions.RequestException as e:
+        no_accesibles.append(f"mastodon #{tag}: {type(e).__name__}")
 for q in ["ecobici", "monopatín eléctrico", "bicisenda Buenos Aires"]:
-    lote = bluesky(q)
-    if lote:
-        print(f"bluesky '{q}': {len(lote)} posts")
-    crudo += lote
+    try:
+        lote = bluesky(q)
+        if lote:
+            print(f"bluesky '{q}': {len(lote)} posts")
+        crudo += lote
+    except requests.exceptions.RequestException as e:
+        no_accesibles.append(f"bluesky '{q}': {type(e).__name__}")
+if no_accesibles:
+    # Databricks Free Edition (serverless) restringe la salida a Internet: mastodon.social no resuelve.
+    # La ingesta social completa corre en la versión local de este mismo notebook (evidence/s1/ingesta_local.log).
+    print("Fuentes sociales no accesibles desde este cómputo:", "; ".join(no_accesibles))
 
 sch = T.StructType([T.StructField(c, T.StringType()) for c in
                     ["fuente", "post_id", "creado_txt", "consulta", "idioma", "texto", "url", "autor"]])
