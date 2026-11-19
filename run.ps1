@@ -103,7 +103,21 @@ function S2-Up {
     foreach ($svc in @("namenode", "datanode", "resourcemanager", "nodemanager", "hadoop-edge", "hive", "hbase")) {
         for ($i = 1; $i -le 3; $i++) {
             try { DC up -d $svc; break }
-            catch { if ($i -eq 3) { throw }; Write-Host "Reintentando $svc ($i)..." -ForegroundColor Yellow; Start-Sleep -Seconds 5 }
+            catch {
+                if ($i -eq 3) { throw }
+                Write-Host "Reintentando $svc ($i)..." -ForegroundColor Yellow
+                if ($i -eq 2 -and $svc -in @("hive", "hbase")) {
+                    # Imagen dañada (p. ej. bajada con el disco lleno): se borra y se vuelve a bajar
+                    $img = @{ hive = "apache/hive:4.0.1"; hbase = "harisekhon/hbase:2.1" }[$svc]
+                    Write-Host "Volviendo a descargar $img" -ForegroundColor Yellow
+                    $prev = $ErrorActionPreference; $ErrorActionPreference = "Continue"
+                    docker compose @PROFILES rm -f -s $svc 2>&1 | ForEach-Object { Write-Host "$_" }
+                    docker image rm -f $img 2>&1 | ForEach-Object { Write-Host "$_" }
+                    $ErrorActionPreference = $prev
+                    DC pull $svc
+                }
+                Start-Sleep -Seconds 5
+            }
         }
     }
 }
