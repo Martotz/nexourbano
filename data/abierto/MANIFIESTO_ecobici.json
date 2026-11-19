@@ -1,0 +1,9 @@
+{
+  "dataset": "EcoBici - recorridos realizados (Buenos Aires Data)",
+  "portal": "https://data.buenosaires.gob.ar/dataset/bicicletas-publicas",
+  "url": "https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2026.zip",
+  "archivo": "trips.csv",
+  "filas": 2247697,
+  "descargado_utc": "2026-11-19T17:12:11+00:00",
+  "licencia": "CC BY 2.5 AR (Buenos Aires Data)"
+}

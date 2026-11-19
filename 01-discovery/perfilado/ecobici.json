@@ -1,0 +1,340 @@
+{
+  "dataset": "ecobici",
+  "archivo": "trips.csv",
+  "perfilado_utc": "2026-11-19T17:13:16+00:00",
+  "filas": 2247697,
+  "columnas": [
+    {
+      "columna": "Id_recorrido",
+      "tipo": "string",
+      "nulos": 0,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 2039054
+    },
+    {
+      "columna": "duracion_recorrido",
+      "tipo": "string",
+      "nulos": 0,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 16621,
+      "min": 61.0,
+      "max": 2317818.0,
+      "media": 1363.378,
+      "p50": 961.0,
+      "p95": 3339.0,
+      "outliers_iqr": 133216,
+      "outliers_pct": 5.927,
+      "rango_iqr": [
+        -953.0,
+        3127.0
+      ]
+    },
+    {
+      "columna": "fecha_origen_recorrido",
+      "tipo": "timestamp",
+      "nulos": 0,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 2029756
+    },
+    {
+      "columna": "id_estacion_origen",
+      "tipo": "string",
+      "nulos": 0,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 414
+    },
+    {
+      "columna": "nombre_estacion_origen",
+      "tipo": "string",
+      "nulos": 4,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 399
+    },
+    {
+      "columna": "direccion_estacion_origen",
+      "tipo": "string",
+      "nulos": 0,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 414
+    },
+    {
+      "columna": "long_estacion_origen",
+      "tipo": "double",
+      "nulos": 4,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 399,
+      "min": -58.527098,
+      "max": -58.35625900000001,
+      "media": -58.431,
+      "p50": -58.42889899999998,
+      "p95": -58.36882117,
+      "outliers_iqr": 0,
+      "outliers_pct": 0.0,
+      "rango_iqr": [
+        -58.547,
+        -58.314
+      ]
+    },
+    {
+      "columna": "lat_estacion_origen",
+      "tipo": "double",
+      "nulos": 4,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 442,
+      "min": -34.687767,
+      "max": -34.536691,
+      "media": -34.598,
+      "p50": -34.6008306,
+      "p95": -34.5532117,
+      "outliers_iqr": 13927,
+      "outliers_pct": 0.62,
+      "rango_iqr": [
+        -34.67,
+        -34.527
+      ]
+    },
+    {
+      "columna": "fecha_destino_recorrido",
+      "tipo": "timestamp",
+      "nulos": 0,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 2137421
+    },
+    {
+      "columna": "id_estacion_destino",
+      "tipo": "string",
+      "nulos": 1,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 414
+    },
+    {
+      "columna": "nombre_estacion_destino",
+      "tipo": "string",
+      "nulos": 1,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 401
+    },
+    {
+      "columna": "direccion_estacion_destino",
+      "tipo": "string",
+      "nulos": 108,
+      "nulos_pct": 0.005,
+      "cardinalidad_aprox": 414
+    },
+    {
+      "columna": "long_estacion_destino",
+      "tipo": "double",
+      "nulos": 1,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 401,
+      "min": -58.527098,
+      "max": 0.0,
+      "media": -58.428,
+      "p50": -58.4285093,
+      "p95": -58.36882117,
+      "outliers_iqr": 107,
+      "outliers_pct": 0.005,
+      "rango_iqr": [
+        -58.55,
+        -58.312
+      ]
+    },
+    {
+      "columna": "lat_estacion_destino",
+      "tipo": "double",
+      "nulos": 1,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 442,
+      "min": -34.687767,
+      "max": 0.0,
+      "media": -34.597,
+      "p50": -34.6009819,
+      "p95": -34.5532117,
+      "outliers_iqr": 15772,
+      "outliers_pct": 0.702,
+      "rango_iqr": [
+        -34.671,
+        -34.527
+      ]
+    },
+    {
+      "columna": "id_usuario",
+      "tipo": "string",
+      "nulos": 0,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 225324
+    },
+    {
+      "columna": "modelo_bicicleta",
+      "tipo": "string",
+      "nulos": 0,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 2
+    },
+    {
+      "columna": "género",
+      "tipo": "string",
+      "nulos": 0,
+      "nulos_pct": 0.0,
+      "cardinalidad_aprox": 3
+    }
+  ],
+  "columna_fecha": "fecha_origen_recorrido",
+  "columna_duracion": "duracion_recorrido",
+  "columna_id": "Id_recorrido",
+  "duplicados_id": 0,
+  "drift_mensual": [
+    {
+      "mes": "2026-01",
+      "filas": 299123,
+      "duracion_media": 1494.8,
+      "duracion_p50": 1056.0
+    },
+    {
+      "mes": "2026-02",
+      "filas": 282602,
+      "duracion_media": 1488.1,
+      "duracion_p50": 1058.0
+    },
+    {
+      "mes": "2026-03",
+      "filas": 317517,
+      "duracion_media": 1356.5,
+      "duracion_p50": 970.0
+    },
+    {
+      "mes": "2026-04",
+      "filas": 263494,
+      "duracion_media": 1357.3,
+      "duracion_p50": 952.0
+    },
+    {
+      "mes": "2026-05",
+      "filas": 233646,
+      "duracion_media": 1271.0,
+      "duracion_p50": 908.0
+    },
+    {
+      "mes": "2026-06",
+      "filas": 194774,
+      "duracion_media": 1262.2,
+      "duracion_p50": 876.0
+    },
+    {
+      "mes": "2026-07",
+      "filas": 185273,
+      "duracion_media": 1365.2,
+      "duracion_p50": 944.0
+    },
+    {
+      "mes": "2026-08",
+      "filas": 203196,
+      "duracion_media": 1343.3,
+      "duracion_p50": 938.0
+    },
+    {
+      "mes": "2026-09",
+      "filas": 268072,
+      "duracion_media": 1267.4,
+      "duracion_p50": 911.0
+    }
+  ],
+  "viajes_por_hora": [
+    {
+      "hora": 0,
+      "count": 44662
+    },
+    {
+      "hora": 1,
+      "count": 33508
+    },
+    {
+      "hora": 2,
+      "count": 19584
+    },
+    {
+      "hora": 3,
+      "count": 12562
+    },
+    {
+      "hora": 4,
+      "count": 11248
+    },
+    {
+      "hora": 5,
+      "count": 19626
+    },
+    {
+      "hora": 6,
+      "count": 38566
+    },
+    {
+      "hora": 7,
+      "count": 81152
+    },
+    {
+      "hora": 8,
+      "count": 92816
+    },
+    {
+      "hora": 9,
+      "count": 81524
+    },
+    {
+      "hora": 10,
+      "count": 73618
+    },
+    {
+      "hora": 11,
+      "count": 87774
+    },
+    {
+      "hora": 12,
+      "count": 121237
+    },
+    {
+      "hora": 13,
+      "count": 135733
+    },
+    {
+      "hora": 14,
+      "count": 132242
+    },
+    {
+      "hora": 15,
+      "count": 156200
+    },
+    {
+      "hora": 16,
+      "count": 190085
+    },
+    {
+      "hora": 17,
+      "count": 213568
+    },
+    {
+      "hora": 18,
+      "count": 201530
+    },
+    {
+      "hora": 19,
+      "count": 151737
+    },
+    {
+      "hora": 20,
+      "count": 127628
+    },
+    {
+      "hora": 21,
+      "count": 95894
+    },
+    {
+      "hora": 22,
+      "count": 71164
+    },
+    {
+      "hora": 23,
+      "count": 54039
+    }
+  ]
+}

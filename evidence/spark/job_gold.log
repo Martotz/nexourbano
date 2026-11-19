@@ -1,0 +1,190 @@
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+
+=================================================================
+=== M8 job_gold · formato=delta · input=/nexo/data/viajes.csv
+=================================================================
+bronze=1,000,000
++-------------------+-----+
+|motivo             |count|
++-------------------+-----+
+|duration_s < 30    |13392|
+|duration_s > 4 h   |6781 |
+|km = 0 con > 10 min|9    |
++-------------------+-----+
+
+26/11/19 18:34:36 WARN MemoryManager: Total allocation exceeds 95.00% (2,040,109,440 bytes) of heap memory
+Scaling row group sizes to 95.00% for 16 writers
+26/11/19 18:34:40 WARN MemoryManager: Total allocation exceeds 95.00% (2,040,109,440 bytes) of heap memory
+Scaling row group sizes to 95.00% for 16 writers
+26/11/19 18:35:14 WARN SparkStringUtils: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
+silver_viajes=979,818 (97.98 % de bronze)
+clima: silver_clima_horario (Open-Meteo, M3)
+riders: lake/bronze/riders_jdbc (MySQL vía Spark JDBC, M7)
+gold_ops_diaria: 91 días
++----------+------+-------+-------+-----------------+------------------+--------------+----------------+-------------------+------------------+------+-----------------+
+|fecha     |viajes|minutos|km     |pct_clima_adverso|revenue_viajes_ars|riders_activos|vehiculos_usados|pct_viajes_plan_pro|revenue_ventas_ars|ventas|revenue_total_ars|
++----------+------+-------+-------+-----------------+------------------+--------------+----------------+-------------------+------------------+------+-----------------+
+|2026-05-30|9     |36.4   |31.3   |0.0              |2736.42           |9             |9               |33.33              |77410             |9     |80146.42         |
+|2026-05-29|11020 |57589.3|44896.7|8.17             |3886843.13        |120           |80              |30.83              |54910             |9     |3941753.13       |
+|2026-05-28|10890 |56085.4|44032.1|0.0              |3810274.23        |120           |80              |31.3               |105890            |11    |3916164.23       |
+|2026-05-27|10812 |56366.2|44838.7|8.93             |3842197.1         |120           |80              |31.05              |80850             |15    |3923047.1        |
+|2026-05-26|10925 |56270.7|44553.4|0.0              |3837821.19        |120           |80              |30.88              |135850            |15    |3973671.19       |
+|2026-05-25|11107 |56985.5|45306.0|4.13             |3897493.14        |120           |80              |30.7               |93350             |15    |3990843.14       |
+|2026-05-24|10893 |56824.0|44401.5|3.89             |3840803.19        |120           |80              |30.6               |37950             |5     |3878753.19       |
++----------+------+-------+-------+-----------------+------------------+--------------+----------------+-------------------+------------------+------+-----------------+
+only showing top 7 rows
+26/11/19 18:35:42 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:42 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:42 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:42 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:42 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:42 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:43 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:43 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:43 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:43 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:43 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:43 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:43 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+Top 10 estaciones origen (período completo):
+26/11/19 18:35:44 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:44 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:44 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:44 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:44 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:44 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:44 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:45 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:45 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/11/19 18:35:45 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
++----+-------------+------------+------+
+|rank|station_start|barrio_start|viajes|
++----+-------------+------------+------+
+|1   |ST000        |Palermo     |41172 |
+|2   |ST019        |Nunez       |41131 |
+|3   |ST002        |San Telmo   |41092 |
+|4   |ST013        |Recoleta    |41087 |
+|5   |ST023        |Chacarita   |41041 |
+|6   |ST001        |Recoleta    |41014 |
+|7   |ST011        |Chacarita   |40984 |
+|8   |ST010        |Microcentro |40970 |
+|9   |ST004        |Caballito   |40966 |
+|10  |ST006        |Villa Crespo|40944 |
++----+-------------+------------+------+
+
+Demanda media por hora según clima:
++-------------+---------------+
+|clima_adverso|viajes_por_hora|
++-------------+---------------+
+|         true|         18.872|
+|        false|         18.898|
++-------------+---------------+
+
+== Physical Plan ==
+AdaptiveSparkPlan (12)
++- HashAggregate (11)
+   +- Exchange (10)
+      +- HashAggregate (9)
+         +- Project (8)
+            +- BroadcastHashJoin Inner BuildRight (7)
+               :- Project (3)
+               :  +- Filter (2)
+               :     +- Scan parquet  (1)
+               +- BroadcastExchange (6)
+                  +- Filter (5)
+                     +- Scan csv  (4)
+
+
+(1) Scan parquet 
+Output [3]: [rider_id#11040, fare_ars#11051, fecha#11053]
+Batched: true
+Location: PreparedDeltaFileIndex [file:/nexo/lake/silver/silver_viajes]
+PartitionFilters: [isnotnull(fecha#11053), (fecha#11053 >= 2026-05-01)]
+PushedFilters: [IsNotNull(rider_id)]
+ReadSchema: struct<rider_id:string,fare_ars:double>
+
+(2) Filter
+Input [3]: [rider_id#11040, fare_ars#11051, fecha#11053]
+Condition : isnotnull(rider_id#11040)
+
+(3) Project
+Output [2]: [rider_id#11040, fare_ars#11051]
+Input [3]: [rider_id#11040, fare_ars#11051, fecha#11053]
+
+(4) Scan csv 
+Output [2]: [rider_id#11072, plan#11075]
+Batched: false
+Location: InMemoryFileIndex [file:/nexo/data/riders.csv]
+PushedFilters: [IsNotNull(rider_id)]
+ReadSchema: struct<rider_id:string,plan:string>
+
+(5) Filter
+Input [2]: [rider_id#11072, plan#11075]
+Condition : isnotnull(rider_id#11072)
+
+(6) BroadcastExchange
+Input [2]: [rider_id#11072, plan#11075]
+Arguments: HashedRelationBroadcastMode(List(input[0, string, false]),false), [plan_id=4144]
+
+(7) BroadcastHashJoin
+Left keys [1]: [rider_id#11040]
+Right keys [1]: [rider_id#11072]
+Join type: Inner
+Join condition: None
+
+(8) Project
+Output [2]: [fare_ars#11051, plan#11075]
+Input [4]: [rider_id#11040, fare_ars#11051, rider_id#11072, plan#11075]
+
+(9) HashAggregate
+Input [2]: [fare_ars#11051, plan#11075]
+Keys [1]: [plan#11075]
+Functions [2]: [partial_count(1), partial_sum(fare_ars#11051)]
+Aggregate Attributes [2]: [count#11217L, sum#11218]
+Results [3]: [plan#11075, count#11219L, sum#11220]
+
+(10) Exchange
+Input [3]: [plan#11075, count#11219L, sum#11220]
+Arguments: hashpartitioning(plan#11075, 16), ENSURE_REQUIREMENTS, [plan_id=4149]
+
+(11) HashAggregate
+Input [3]: [plan#11075, count#11219L, sum#11220]
+Keys [1]: [plan#11075]
+Functions [2]: [count(1), sum(fare_ars#11051)]
+Aggregate Attributes [2]: [count(1)#11102L, sum(fare_ars#11051)#11103]
+Results [3]: [plan#11075, count(1)#11102L AS viajes#11081L, sum(fare_ars#11051)#11103 AS revenue#11082]
+
+(12) AdaptiveSparkPlan
+Output [3]: [plan#11075, viajes#11081L, revenue#11082]
+Arguments: isFinalPlan=false
+
+
+
+==================================================================
+NOTAS DEL SQUAD (qué reescribió Catalyst / qué cacheamos)
+==================================================================
+Query: viajes de mayo 2026 en silver_viajes ⨝ riders, agrupado por plan.
+(Verificado automáticamente contra el plan de arriba: SÍ = aparece en el plan.)
+
+1. Partition pruning [SÍ]: el filtro fecha >= '2026-05-01' baja al
+   FileScan como PartitionFilters; Spark lee solo las carpetas fecha=2026-05-* y no las 92 particiones.
+2. Broadcast join [SÍ]: riders tiene 120 filas, así que Catalyst elige BroadcastHashJoin
+   y evita el shuffle de los 979,818 viajes de Silver (BroadcastExchange del lado chico).
+3. Column pruning [SÍ]: el scan lee solo rider_id y
+   fare_ars (más la partición fecha), no las 17 columnas: ver ReadSchema del Scan.
+4. Agregación en dos fases [SÍ]: HashAggregate parcial antes del Exchange y final después.
+5. Cache (decisión nuestra): silver_viajes se cachea con .cache() mientras se calculan gold_ops_diaria,
+   gold_top_estaciones y gold_demanda_estacion_hora (3 lecturas). Antes de este explain se hace
+   unpersist(): con cache el plan muestra InMemoryTableScan y no se ve la poda de particiones.
+
+Formato del lake: delta. Tiempo total del job: 90.7 s.
+
++----+------+-------------------+
+|plan|viajes|            revenue|
++----+------+-------------------+
+|free|110435|3.886260691000004E7|
+| pro| 97292|3.430201343000002E7|
+|plus|108321|      3.813718175E7|
++----+------+-------------------+
+

@@ -1,0 +1,38 @@
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+
+===============================================================================================
+=== Spark JDBC jdbc:mysql://mysql:3306/crm -> hdfs://namenode:8020/nexo/bronze/riders_sqoop
+===============================================================================================
+filas leídas de MySQL: 120 · particiones JDBC: 4
+root
+ |-- rider_id: string (nullable = true)
+ |-- nombre: string (nullable = true)
+ |-- email: string (nullable = true)
+ |-- plan: string (nullable = true)
+ |-- alta: date (nullable = true)
+ |-- ciudad: string (nullable = true)
+
++----+-----+
+|plan|count|
++----+-----+
+|free|   42|
+|plus|   41|
+| pro|   37|
++----+-----+
+
+HDFS hdfs://namenode:8020/nexo/bronze/riders_sqoop: 120 filas en 4 archivos
+   hdfs://namenode:8020/nexo/bronze/riders_sqoop/part-00000-2fe86ebb-ebad-4e67-9692-4400ca9f7661-c000.csv
+   hdfs://namenode:8020/nexo/bronze/riders_sqoop/part-00001-2fe86ebb-ebad-4e67-9692-4400ca9f7661-c000.csv
+   hdfs://namenode:8020/nexo/bronze/riders_sqoop/part-00002-2fe86ebb-ebad-4e67-9692-4400ca9f7661-c000.csv
+   hdfs://namenode:8020/nexo/bronze/riders_sqoop/part-00003-2fe86ebb-ebad-4e67-9692-4400ca9f7661-c000.csv
++-----+----------+----------------------+----+----------+------------+
+|_c0  |_c1       |_c2                   |_c3 |_c4       |_c5         |
++-----+----------+----------------------+----+----------+------------+
+|R0000|Rider_0000|rider0000@nexo.example|free|2025-01-03|Buenos Aires|
+|R0001|Rider_0001|rider0001@nexo.example|plus|2026-04-12|Buenos Aires|
+|R0002|Rider_0002|rider0002@nexo.example|plus|2026-04-11|Buenos Aires|
+|R0003|Rider_0003|rider0003@nexo.example|plus|2025-05-24|Buenos Aires|
+|R0004|Rider_0004|rider0004@nexo.example|free|2025-08-31|Buenos Aires|
++-----+----------+----------------------+----+----------+------------+
+only showing top 5 rows

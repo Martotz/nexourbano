@@ -1,0 +1,33 @@
+Recursos 'recorridos' publicados:
+  2010  CSV    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2010.csv
+  2011  CSV    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2011.csv
+  2012  CSV    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2012.csv
+  2013  CSV    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2013.csv
+  2014  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2014.zip
+  2015  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2015.zip
+  2016  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2016.zip
+  2017  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2017.zip
+  2018  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2018.zip
+  2019  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2019.zip
+  2020  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2020.zip
+  2021  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2021.zip
+  2022  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2022.zip
+  2023  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2023.zip
+  2024  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2024.zip
+  2025  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2025.zip
+  2026  ZIP    https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2026.zip
+Descargando https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2026.zip
+  52 MB
+  105 MB
+OK /nexo/data/abierto/recorridos-realizados-2026.zip (143.3 MB)
+Extrayendo trips.csv
+{
+  "dataset": "EcoBici - recorridos realizados (Buenos Aires Data)",
+  "portal": "https://data.buenosaires.gob.ar/dataset/bicicletas-publicas",
+  "url": "https://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte-y-obras-publicas/bicicletas-publicas/recorridos-realizados-2026.zip",
+  "archivo": "trips.csv",
+  "filas": 2247697,
+  "descargado_utc": "2026-11-19T17:12:11+00:00",
+  "licencia": "CC BY 2.5 AR (Buenos Aires Data)"
+}
+Muestra versionable: /nexo/data/abierto/ecobici_muestra.csv

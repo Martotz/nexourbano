@@ -1,0 +1,85 @@
+# Bootstrap Hadoop NexoUrbano — 2026-11-19T18:14:57Z
+# Imágenes: apache/hadoop:3.3.6 (namenode, datanode, resourcemanager, nodemanager, edge)
+
+$ hadoop version
+Hadoop 3.3.6
+Source code repository https://github.com/apache/hadoop.git -r 1be78238728da9266a4f88195058f08fd012bf9c
+Compiled by ubuntu on 2023-06-18T08:22Z
+Compiled on platform linux-x86_64
+Compiled with protoc 3.7.1
+From source with checksum 5652179ad55f76cb287d9c633bb53bbd
+This command was run using /opt/hadoop/share/hadoop/common/hadoop-common-3.3.6.jar
+
+$ java -version
+openjdk version "1.8.0_212"
+OpenJDK Runtime Environment (build 1.8.0_212-b04)
+OpenJDK 64-Bit Server VM (build 25.212-b04, mixed mode)
+
+# Esperando a que el NameNode salga de safe mode...
+Safe mode is OFF
+
+$ hdfs dfs -ls /
+Found 1 items
+drwxr-xr-x   - hadoop supergroup          0 2026-11-19 18:10 /nexo
+
+$ hdfs dfsadmin -report
+Configured Capacity: 1081101176832 (1006.85 GB)
+Present Capacity: 1008127247188 (938.89 GB)
+DFS Remaining: 1007957078016 (938.73 GB)
+DFS Used: 170169172 (162.29 MB)
+DFS Used%: 0.02%
+Replicated Blocks:
+	Under replicated blocks: 0
+	Blocks with corrupt replicas: 0
+	Missing blocks: 0
+	Missing blocks (with replication factor 1): 0
+	Low redundancy blocks with highest priority to recover: 0
+	Pending deletion blocks: 0
+Erasure Coded Block Groups: 
+	Low redundancy block groups: 0
+	Block groups with corrupt internal blocks: 0
+	Missing block groups: 0
+	Low redundancy blocks with highest priority to recover: 0
+	Pending deletion blocks: 0
+
+-------------------------------------------------
+Live datanodes (1):
+
+Name: 172.18.0.7:9866 (nexo-datanode.nexourbano_default)
+Hostname: datanode
+Decommission Status : Normal
+Configured Capacity: 1081101176832 (1006.85 GB)
+DFS Used: 170169172 (162.29 MB)
+Non DFS Used: 17981574316 (16.75 GB)
+DFS Remaining: 1007957078016 (938.73 GB)
+DFS Used%: 0.02%
+DFS Remaining%: 93.23%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 0
+Last contact: Thu Nov 19 18:15:00 UTC 2026
+Last Block Report: Thu Nov 19 18:05:33 UTC 2026
+Num of Blocks: 6
+
+
+
+$ yarn node -list
+2026-11-19 18:15:03 INFO  DefaultNoHARMFailoverProxyProvider:64 - Connecting to ResourceManager at resourcemanager/172.18.0.8:8032
+Total Nodes:1
+         Node-Id	     Node-State	Node-Http-Address	Number-of-Running-Containers
+nodemanager:38897	        RUNNING	 nodemanager:8042	                           0
+
+$ pig -version
+/opt/pig/bin/pig: line 287: which: command not found
+Apache Pig version 0.17.0 (r1797386) 
+compiled Jun 02 2017, 15:41:58
+
+$ flume-ng version
+Flume 1.11.0
+Source code repository: https://git.apache.org/repos/asf/flume.git
+Revision: 1a15927e594fd0d05a59d804b90a9c31ec93f5e1
+Compiled by rgoers on Sun Oct 16 14:44:15 MST 2022
+From source with checksum bbbca682177262aac3a89defde369a37

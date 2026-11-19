@@ -1,0 +1,125 @@
+{
+  "periodo": {
+    "desde": {
+      "$date": "2026-03-15T22:00:00Z"
+    },
+    "hasta": {
+      "$date": "2026-06-13T22:00:00Z"
+    }
+  },
+  "por_categoria": [
+    {
+      "categoria": "seguro",
+      "ventas": 615,
+      "revenue_ars": 4489950
+    },
+    {
+      "categoria": "recarga",
+      "ventas": 641,
+      "revenue_ars": 4100090
+    },
+    {
+      "categoria": "accesorio",
+      "ventas": 623,
+      "revenue_ars": 3759670
+    },
+    {
+      "categoria": "pase",
+      "ventas": 560,
+      "revenue_ars": 3091800
+    }
+  ],
+  "top5_productos": [
+    {
+      "sku": "SKU033",
+      "nombre": "Seguro 3",
+      "categoria": "seguro",
+      "tags": [
+        "pro",
+        "urbano"
+      ],
+      "ventas": 69,
+      "revenue_ars": 888710
+    },
+    {
+      "sku": "SKU019",
+      "nombre": "Recarga 9",
+      "categoria": "recarga",
+      "tags": [
+        "pro",
+        "noche"
+      ],
+      "ventas": 59,
+      "revenue_ars": 733610
+    },
+    {
+      "sku": "SKU025",
+      "nombre": "Accesorio 5",
+      "categoria": "accesorio",
+      "tags": [
+        "estudiante",
+        "lluvia"
+      ],
+      "ventas": 70,
+      "revenue_ars": 692100
+    },
+    {
+      "sku": "SKU035",
+      "nombre": "Seguro 5",
+      "categoria": "seguro",
+      "tags": [
+        "lluvia",
+        "pro"
+      ],
+      "ventas": 68,
+      "revenue_ars": 688120
+    },
+    {
+      "sku": "SKU013",
+      "nombre": "Recarga 3",
+      "categoria": "recarga",
+      "tags": [
+        "noche",
+        "lluvia"
+      ],
+      "ventas": 67,
+      "revenue_ars": 663730
+    }
+  ],
+  "por_mes": [
+    {
+      "mes": "2026-03",
+      "ventas": 467,
+      "revenue_ars": 2946130
+    },
+    {
+      "mes": "2026-04",
+      "ventas": 811,
+      "revenue_ars": 5050990
+    },
+    {
+      "mes": "2026-05",
+      "ventas": 810,
+      "revenue_ars": 5212600
+    },
+    {
+      "mes": "2026-06",
+      "ventas": 351,
+      "revenue_ars": 2231790
+    }
+  ],
+  "por_canal": [
+    {
+      "canal": "app",
+      "ventas": 1241
+    },
+    {
+      "canal": "web",
+      "ventas": 623
+    },
+    {
+      "canal": "estacion",
+      "ventas": 575
+    }
+  ]
+}

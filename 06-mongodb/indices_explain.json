@@ -1,0 +1,42 @@
+[
+  {
+    "etiqueta": "ANTES (sin índice)",
+    "coleccion": "productos",
+    "filtro": "{\"tags\":\"lluvia\",\"activo\":true}",
+    "plan": "COLLSCAN",
+    "nReturned": 17,
+    "totalDocsExamined": 39,
+    "totalKeysExamined": 0,
+    "executionTimeMillis": 0
+  },
+  {
+    "etiqueta": "DESPUÉS (índice tags_1)",
+    "coleccion": "productos",
+    "filtro": "{\"tags\":\"lluvia\",\"activo\":true}",
+    "plan": "FETCH <- IXSCAN",
+    "nReturned": 17,
+    "totalDocsExamined": 17,
+    "totalKeysExamined": 17,
+    "executionTimeMillis": 1
+  },
+  {
+    "etiqueta": "ANTES (sin índice)",
+    "coleccion": "ventas",
+    "filtro": "{\"ciudad\":\"Buenos Aires\",\"categoria\":\"pase\"}",
+    "plan": "COLLSCAN",
+    "nReturned": 482,
+    "totalDocsExamined": 4000,
+    "totalKeysExamined": 0,
+    "executionTimeMillis": 1
+  },
+  {
+    "etiqueta": "DESPUÉS (índice ciudad_1_categoria_1)",
+    "coleccion": "ventas",
+    "filtro": "{\"ciudad\":\"Buenos Aires\",\"categoria\":\"pase\"}",
+    "plan": "FETCH <- IXSCAN",
+    "nReturned": 482,
+    "totalDocsExamined": 482,
+    "totalKeysExamined": 482,
+    "executionTimeMillis": 1
+  }
+]

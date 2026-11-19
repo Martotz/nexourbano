@@ -1,0 +1,160 @@
+[
+  {
+    "$match": {
+      "ts": {
+        "$gte": "2026-03-15T22:00:00.000Z",
+        "$lte": "2026-06-13T22:00:00.000Z"
+      }
+    }
+  },
+  {
+    "$facet": {
+      "por_categoria": [
+        {
+          "$group": {
+            "_id": "$categoria",
+            "ventas": {
+              "$sum": 1
+            },
+            "revenue_ars": {
+              "$sum": "$monto_ars"
+            }
+          }
+        },
+        {
+          "$sort": {
+            "revenue_ars": -1
+          }
+        }
+      ],
+      "top5_productos": [
+        {
+          "$group": {
+            "_id": "$sku",
+            "ventas": {
+              "$sum": 1
+            },
+            "revenue_ars": {
+              "$sum": "$monto_ars"
+            }
+          }
+        },
+        {
+          "$sort": {
+            "revenue_ars": -1
+          }
+        },
+        {
+          "$limit": 5
+        },
+        {
+          "$lookup": {
+            "from": "productos",
+            "localField": "_id",
+            "foreignField": "sku",
+            "as": "producto"
+          }
+        },
+        {
+          "$unwind": {
+            "path": "$producto",
+            "preserveNullAndEmptyArrays": true
+          }
+        }
+      ],
+      "por_mes": [
+        {
+          "$group": {
+            "_id": {
+              "$dateToString": {
+                "format": "%Y-%m",
+                "date": "$ts"
+              }
+            },
+            "ventas": {
+              "$sum": 1
+            },
+            "revenue_ars": {
+              "$sum": "$monto_ars"
+            }
+          }
+        },
+        {
+          "$sort": {
+            "_id": 1
+          }
+        }
+      ],
+      "por_canal": [
+        {
+          "$group": {
+            "_id": "$canal",
+            "ventas": {
+              "$sum": 1
+            }
+          }
+        },
+        {
+          "$sort": {
+            "ventas": -1
+          }
+        }
+      ]
+    }
+  },
+  {
+    "$project": {
+      "_id": 0,
+      "periodo": {
+        "desde": "2026-03-15T22:00:00.000Z",
+        "hasta": "2026-06-13T22:00:00.000Z"
+      },
+      "por_categoria": {
+        "$map": {
+          "input": "$por_categoria",
+          "as": "c",
+          "in": {
+            "categoria": "$$c._id",
+            "ventas": "$$c.ventas",
+            "revenue_ars": "$$c.revenue_ars"
+          }
+        }
+      },
+      "top5_productos": {
+        "$map": {
+          "input": "$top5_productos",
+          "as": "p",
+          "in": {
+            "sku": "$$p._id",
+            "nombre": "$$p.producto.nombre",
+            "categoria": "$$p.producto.categoria",
+            "tags": "$$p.producto.tags",
+            "ventas": "$$p.ventas",
+            "revenue_ars": "$$p.revenue_ars"
+          }
+        }
+      },
+      "por_mes": {
+        "$map": {
+          "input": "$por_mes",
+          "as": "m",
+          "in": {
+            "mes": "$$m._id",
+            "ventas": "$$m.ventas",
+            "revenue_ars": "$$m.revenue_ars"
+          }
+        }
+      },
+      "por_canal": {
+        "$map": {
+          "input": "$por_canal",
+          "as": "c",
+          "in": {
+            "canal": "$$c._id",
+            "ventas": "$$c.ventas"
+          }
+        }
+      }
+    }
+  }
+]

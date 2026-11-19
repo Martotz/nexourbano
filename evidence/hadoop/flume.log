@@ -1,0 +1,20 @@
+# Flume NexoUrbano — 2026-11-19T18:32:01Z
+$ flume-ng agent -n nexo -f /nexo/04-hadoop/flume/nexo-agent.conf (en segundo plano)
+
+# Simulando 200 eventos en /tmp/flume/app_live.log (≈ 20 por segundo)
+líneas escritas: 200
+# Esperando el roll de archivos del sink HDFS (rollInterval=10 s)...
+
+# Log del agente (extracto)
+
+$ hdfs dfs -ls -R /nexo/bronze/logs
+drwxr-xr-x   - hadoop supergroup          0 2026-11-19 18:32 /nexo/bronze/logs/fecha=2026-11-19
+-rw-r--r--   1 hadoop supergroup      24644 2026-11-19 18:32 /nexo/bronze/logs/fecha=2026-11-19/app.1795113148619.jsonl
+
+# Líneas que llegaron a HDFS (deben ser 200):
+200
+
+# Eventos por tipo en HDFS:
+     23 "event": "payment_fail"
+    101 "event": "ride_end"
+     76 "event": "ride_start"

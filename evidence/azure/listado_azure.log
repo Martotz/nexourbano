@@ -1,0 +1,18 @@
+# Data Lake azure — 2026-11-19T17:14:20+00:00
+contenedor creado: bronze
+contenedor creado: silver
+contenedor creado: gold
+subido viajes_muestra.csv (0.3 MB) -> abfss://bronze@nexourbano2002.dfs.core.windows.net/viajes/2026/11/19/viajes_muestra.csv
+subido viajes.csv (167.7 MB) -> abfss://bronze@nexourbano2002.dfs.core.windows.net/viajes/2026/11/19/viajes.csv
+
+$ listado abfss://bronze@nexourbano2002.dfs.core.windows.net/
+  DIR  viajes    2026-11-19 17:14:21
+  DIR  viajes/2026    2026-11-19 17:14:21
+  DIR  viajes/2026/11    2026-11-19 17:14:21
+  DIR  viajes/2026/11/19    2026-11-19 17:14:21
+  FILE viajes/2026/11/19/viajes.csv  167686329  2026-11-19 17:14:29
+  FILE viajes/2026/11/19/viajes_muestra.csv  335498  2026-11-19 17:14:21
+
+$ listado abfss://silver@nexourbano2002.dfs.core.windows.net/
+
+$ listado abfss://gold@nexourbano2002.dfs.core.windows.net/

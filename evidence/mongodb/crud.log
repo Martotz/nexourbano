@@ -1,0 +1,227 @@
+# MongoDB CRUD — 2026-11-19T18:44:28Z
+2.14.2
+
+========== Carga ==========
+insertMany productos: 40 documentos
+insertMany ventas: 4000 documentos
+{
+  _id: ObjectId('6aff438d515d7b29fdeb55e8'),
+  sku: 'SKU001',
+  nombre: 'Pase 1',
+  categoria: 'pase',
+  tags: [
+    'urbano',
+    'lluvia'
+  ],
+  precios: {
+    'Buenos Aires': 5990,
+    Cordoba: 5790
+  },
+  stock: {
+    'Buenos Aires': 205,
+    Cordoba: 46
+  },
+  activo: true,
+  ficha: {
+    descripcion: 'Pase 1 NexoUrbano',
+    vigencia_dias: 30,
+    canales: [
+      'app',
+      'web',
+      'estacion'
+    ]
+  },
+  actualizado: ISODate('2026-06-01T00:00:00.000Z')
+}
+
+========== find: pases con precio en Buenos Aires <= 5990, activos ==========
+{
+  sku: 'SKU002',
+  nombre: 'Pase 2',
+  tags: [
+    'noche',
+    'urbano'
+  ],
+  precios: {
+    'Buenos Aires': 1990
+  },
+  stock: {
+    'Buenos Aires': 260
+  }
+}
+{
+  sku: 'SKU005',
+  nombre: 'Pase 5',
+  tags: [
+    'noche',
+    'urbano'
+  ],
+  precios: {
+    'Buenos Aires': 3490
+  },
+  stock: {
+    'Buenos Aires': 64
+  }
+}
+{
+  sku: 'SKU008',
+  nombre: 'Pase 8',
+  tags: [
+    'noche',
+    'lluvia'
+  ],
+  precios: {
+    'Buenos Aires': 3490
+  },
+  stock: {
+    'Buenos Aires': 382
+  }
+}
+{
+  sku: 'SKU001',
+  nombre: 'Pase 1',
+  tags: [
+    'urbano',
+    'lluvia'
+  ],
+  precios: {
+    'Buenos Aires': 5990
+  },
+  stock: {
+    'Buenos Aires': 205
+  }
+}
+{
+  sku: 'SKU004',
+  nombre: 'Pase 4',
+  tags: [
+    'estudiante',
+    'pro'
+  ],
+  precios: {
+    'Buenos Aires': 5990
+  },
+  stock: {
+    'Buenos Aires': 146
+  }
+}
+{
+  sku: 'SKU006',
+  nombre: 'Pase 6',
+  tags: [
+    'noche',
+    'estudiante'
+  ],
+  precios: {
+    'Buenos Aires': 5990
+  },
+  stock: {
+    'Buenos Aires': 148
+  }
+}
+{
+  sku: 'SKU009',
+  nombre: 'Pase 9',
+  tags: [
+    'pro',
+    'lluvia'
+  ],
+  precios: {
+    'Buenos Aires': 5990
+  },
+  stock: {
+    'Buenos Aires': 291
+  }
+}
+
+========== updateOne: ajuste de precio de SKU001 (+12 % en Buenos Aires) ==========
+{
+  antes: {
+    sku: 'SKU001',
+    precios: {
+      'Buenos Aires': 5990,
+      Cordoba: 5790
+    },
+    actualizado: ISODate('2026-06-01T00:00:00.000Z')
+  }
+}
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+{
+  despues: {
+    sku: 'SKU001',
+    precios: {
+      'Buenos Aires': 6709,
+      Cordoba: 5790
+    },
+    actualizado: ISODate('2026-11-19T18:44:30.177Z')
+  }
+}
+
+========== deleteOne: SKU discontinuado (activo = false) ==========
+[
+  {
+    sku: 'SKU007',
+    nombre: 'Pase 7'
+  }
+]
+{
+  acknowledged: true,
+  deletedCount: 1
+}
+productos restantes: 39
+
+========== Índice multikey en tags (productos) ==========
+{
+  etiqueta: 'ANTES (sin índice)',
+  coleccion: 'productos',
+  filtro: '{"tags":"lluvia","activo":true}',
+  plan: 'COLLSCAN',
+  nReturned: 17,
+  totalDocsExamined: 39,
+  totalKeysExamined: 0,
+  executionTimeMillis: 0
+}
+{
+  etiqueta: 'DESPUÉS (índice tags_1)',
+  coleccion: 'productos',
+  filtro: '{"tags":"lluvia","activo":true}',
+  plan: 'FETCH <- IXSCAN',
+  nReturned: 17,
+  totalDocsExamined: 17,
+  totalKeysExamined: 17,
+  executionTimeMillis: 1
+}
+
+========== Índice compuesto ciudad + categoria (ventas, 4 000 docs) ==========
+{
+  etiqueta: 'ANTES (sin índice)',
+  coleccion: 'ventas',
+  filtro: '{"ciudad":"Buenos Aires","categoria":"pase"}',
+  plan: 'COLLSCAN',
+  nReturned: 482,
+  totalDocsExamined: 4000,
+  totalKeysExamined: 0,
+  executionTimeMillis: 1
+}
+{
+  etiqueta: 'DESPUÉS (índice ciudad_1_categoria_1)',
+  coleccion: 'ventas',
+  filtro: '{"ciudad":"Buenos Aires","categoria":"pase"}',
+  plan: 'FETCH <- IXSCAN',
+  nReturned: 482,
+  totalDocsExamined: 482,
+  totalKeysExamined: 482,
+  executionTimeMillis: 1
+}
+
+========== Resumen (también en 06-mongodb/indices_explain.json) ==========
+productos ANTES (sin índice)                     COLLSCAN               docs=   39 keys=    0 n=  17 ms=0
+productos DESPUÉS (índice tags_1)                FETCH <- IXSCAN        docs=   17 keys=   17 n=  17 ms=1
+ventas    ANTES (sin índice)                     COLLSCAN               docs= 4000 keys=    0 n= 482 ms=1
+ventas    DESPUÉS (índice ciudad_1_categoria_1)  FETCH <- IXSCAN        docs=  482 keys=  482 n= 482 ms=1

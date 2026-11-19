@@ -1,0 +1,1706 @@
+# Hive NexoUrbano — 2026-11-19T18:19:07Z
+
+$ beeline -u jdbc:hive2://localhost:10000/ -n hive --showHeader=true --outputformat=table2 -f /nexo/04-hadoop/hive/hive_nexo.sql
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Connecting to jdbc:hive2://localhost:10000/
+Connected to: Apache Hive (version 4.0.1)
+Driver: Hive JDBC (version 4.0.1)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://localhost:10000/> -- M6 · Hive sobre HDFS: Bronze externa + Silver interna particionada (squad 2002)
+0: jdbc:hive2://localhost:10000/> --   docker compose exec -T hive bash /nexo/04-hadoop/hive/hive_run.sh
+0: jdbc:hive2://localhost:10000/> -- Requiere 04-hadoop/hdfs/hdfs_nexo.sh (deja viajes.csv en /nexo/bronze/viajes_full/).
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> CREATE DATABASE IF NOT EXISTS nexo;
+INFO  : Compiling command(queryId=hive_20261119181916_30b798e5-ebd0-4bf5-8209-09639d0f9771): CREATE DATABASE IF NOT EXISTS nexo
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119181916_30b798e5-ebd0-4bf5-8209-09639d0f9771); Time taken: 0.131 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119181916_30b798e5-ebd0-4bf5-8209-09639d0f9771): CREATE DATABASE IF NOT EXISTS nexo
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119181916_30b798e5-ebd0-4bf5-8209-09639d0f9771); Time taken: 0.28 seconds
+No rows affected (0.521 seconds)
+0: jdbc:hive2://localhost:10000/> USE nexo;
+INFO  : Compiling command(queryId=hive_20261119181916_b8da03ad-507b-40a7-be7c-d8de207e57f6): USE nexo
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119181916_b8da03ad-507b-40a7-be7c-d8de207e57f6); Time taken: 0.019 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119181916_b8da03ad-507b-40a7-be7c-d8de207e57f6): USE nexo
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119181916_b8da03ad-507b-40a7-be7c-d8de207e57f6); Time taken: 0.009 seconds
+No rows affected (0.04 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> -- 1) Tabla EXTERNA: Hive solo guarda el esquema; los datos siguen siendo el CSV de HDFS.
+0: jdbc:hive2://localhost:10000/> DROP TABLE IF EXISTS bronze_viajes;
+INFO  : Compiling command(queryId=hive_20261119181916_d0d85a5d-de59-4346-a130-78de3a3a6dd1): DROP TABLE IF EXISTS bronze_viajes
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119181916_d0d85a5d-de59-4346-a130-78de3a3a6dd1); Time taken: 0.01 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119181916_d0d85a5d-de59-4346-a130-78de3a3a6dd1): DROP TABLE IF EXISTS bronze_viajes
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119181916_d0d85a5d-de59-4346-a130-78de3a3a6dd1); Time taken: 0.019 seconds
+No rows affected (0.042 seconds)
+0: jdbc:hive2://localhost:10000/> CREATE EXTERNAL TABLE bronze_viajes (
+. . . . . . . . . . . . . . . . >   ride_id STRING, ts_start STRING, ts_end STRING, duration_s INT,
+. . . . . . . . . . . . . . . . >   rider_id STRING, vehicle_id STRING, station_start STRING, station_end STRING,
+. . . . . . . . . . . . . . . . >   barrio_start STRING, barrio_end STRING, lat_start DOUBLE, lon_start DOUBLE,
+. . . . . . . . . . . . . . . . >   lat_end DOUBLE, lon_end DOUBLE, km DOUBLE, fare_ars DOUBLE, clima_codigo INT
+. . . . . . . . . . . . . . . . > )
+. . . . . . . . . . . . . . . . > ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+. . . . . . . . . . . . . . . . > STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . > LOCATION 'hdfs://namenode:8020/nexo/bronze/viajes_full'
+. . . . . . . . . . . . . . . . > TBLPROPERTIES ('skip.header.line.count'='1');
+INFO  : Compiling command(queryId=hive_20261119181916_e6b3937d-4b34-4ce2-9b24-293434198e5b): CREATE EXTERNAL TABLE bronze_viajes (
+ride_id STRING, ts_start STRING, ts_end STRING, duration_s INT,
+rider_id STRING, vehicle_id STRING, station_start STRING, station_end STRING,
+barrio_start STRING, barrio_end STRING, lat_start DOUBLE, lon_start DOUBLE,
+lat_end DOUBLE, lon_end DOUBLE, km DOUBLE, fare_ars DOUBLE, clima_codigo INT
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION 'hdfs://namenode:8020/nexo/bronze/viajes_full'
+TBLPROPERTIES ('skip.header.line.count'='1')
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119181916_e6b3937d-4b34-4ce2-9b24-293434198e5b); Time taken: 0.024 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119181916_e6b3937d-4b34-4ce2-9b24-293434198e5b): CREATE EXTERNAL TABLE bronze_viajes (
+ride_id STRING, ts_start STRING, ts_end STRING, duration_s INT,
+rider_id STRING, vehicle_id STRING, station_start STRING, station_end STRING,
+barrio_start STRING, barrio_end STRING, lat_start DOUBLE, lon_start DOUBLE,
+lat_end DOUBLE, lon_end DOUBLE, km DOUBLE, fare_ars DOUBLE, clima_codigo INT
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION 'hdfs://namenode:8020/nexo/bronze/viajes_full'
+TBLPROPERTIES ('skip.header.line.count'='1')
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119181916_e6b3937d-4b34-4ce2-9b24-293434198e5b); Time taken: 0.661 seconds
+No rows affected (0.695 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> SELECT COUNT(*) AS filas_bronze FROM bronze_viajes;
+INFO  : Compiling command(queryId=hive_20261119181917_b13e6421-2f1a-4d9b-bc35-bb36a189101b): SELECT COUNT(*) AS filas_bronze FROM bronze_viajes
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:filas_bronze, type:bigint, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119181917_b13e6421-2f1a-4d9b-bc35-bb36a189101b); Time taken: 0.519 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119181917_b13e6421-2f1a-4d9b-bc35-bb36a189101b): SELECT COUNT(*) AS filas_bronze FROM bronze_viajes
+INFO  : Query ID = hive_20261119181917_b13e6421-2f1a-4d9b-bc35-bb36a189101b
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Subscribed to counters: [] for queryId: hive_20261119181917_b13e6421-2f1a-4d9b-bc35-bb36a189101b
+INFO  : Tez session hasn't been created yet. Opening session
+INFO  : Dag name: SELECT COUNT(*) AS fi......ROM bronze_viajes (Stage-1)
+INFO  : HS2 Host: [cb26545fc91e], Query ID: [hive_20261119181917_b13e6421-2f1a-4d9b-bc35-bb36a189101b], Dag ID: [dag_1795112358816_0001_1], DAG Session ID: [application_1795112358816_0001]
+INFO  : Status: Running (Executing on YARN cluster with App id application_1795112358816_0001)
+
+[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container        INITED      1          0        0        1       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/02  [>>--------------------------] 0%    ELAPSED TIME: 0.97 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[8A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/02  [>>--------------------------] 0%    ELAPSED TIME: 1.48 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[8A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/02  [==========================>>] 100%  ELAPSED TIME: 1.87 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+INFO  : Completed executing command(queryId=hive_20261119181917_b13e6421-2f1a-4d9b-bc35-bb36a189101b); Time taken: 3.966 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++---------------+
+| filas_bronze  |
++---------------+
+| 1000000       |
++---------------+
+1 row selected (4.554 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> -- 2) Tabla INTERNA (managed) particionada por fecha, en Parquet, con las reglas del contrato.
+0: jdbc:hive2://localhost:10000/> SET hive.exec.dynamic.partition=true;
+No rows affected (0.013 seconds)
+0: jdbc:hive2://localhost:10000/> SET hive.exec.dynamic.partition.mode=nonstrict;
+No rows affected (0.005 seconds)
+0: jdbc:hive2://localhost:10000/> SET hive.exec.max.dynamic.partitions=500;
+No rows affected (0.005 seconds)
+0: jdbc:hive2://localhost:10000/> SET hive.exec.max.dynamic.partitions.pernode=500;
+No rows affected (0.004 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> DROP TABLE IF EXISTS silver_viajes;
+INFO  : Compiling command(queryId=hive_20261119181922_25254de6-7e7d-4049-834c-aaa669f90250): DROP TABLE IF EXISTS silver_viajes
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119181922_25254de6-7e7d-4049-834c-aaa669f90250); Time taken: 0.018 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119181922_25254de6-7e7d-4049-834c-aaa669f90250): DROP TABLE IF EXISTS silver_viajes
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119181922_25254de6-7e7d-4049-834c-aaa669f90250); Time taken: 0.006 seconds
+No rows affected (0.031 seconds)
+0: jdbc:hive2://localhost:10000/> CREATE TABLE silver_viajes (
+. . . . . . . . . . . . . . . . >   ride_id STRING, ts_start TIMESTAMP, duration_s INT, rider_id STRING, vehicle_id STRING,
+. . . . . . . . . . . . . . . . >   station_start STRING, station_end STRING, barrio_start STRING, barrio_end STRING,
+. . . . . . . . . . . . . . . . >   km DOUBLE, fare_ars DOUBLE, clima_codigo INT
+. . . . . . . . . . . . . . . . > )
+. . . . . . . . . . . . . . . . > PARTITIONED BY (fecha STRING)
+. . . . . . . . . . . . . . . . > STORED AS PARQUET;
+INFO  : Compiling command(queryId=hive_20261119181922_9d30c019-936c-433e-96eb-11c7e6d65678): CREATE TABLE silver_viajes (
+ride_id STRING, ts_start TIMESTAMP, duration_s INT, rider_id STRING, vehicle_id STRING,
+station_start STRING, station_end STRING, barrio_start STRING, barrio_end STRING,
+km DOUBLE, fare_ars DOUBLE, clima_codigo INT
+)
+PARTITIONED BY (fecha STRING)
+STORED AS PARQUET
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119181922_9d30c019-936c-433e-96eb-11c7e6d65678); Time taken: 0.016 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119181922_9d30c019-936c-433e-96eb-11c7e6d65678): CREATE TABLE silver_viajes (
+ride_id STRING, ts_start TIMESTAMP, duration_s INT, rider_id STRING, vehicle_id STRING,
+station_start STRING, station_end STRING, barrio_start STRING, barrio_end STRING,
+km DOUBLE, fare_ars DOUBLE, clima_codigo INT
+)
+PARTITIONED BY (fecha STRING)
+STORED AS PARQUET
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119181922_9d30c019-936c-433e-96eb-11c7e6d65678); Time taken: 0.13 seconds
+No rows affected (0.155 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> INSERT OVERWRITE TABLE silver_viajes PARTITION (fecha)
+. . . . . . . . . . . . . . . . > SELECT ride_id,
+. . . . . . . . . . . . . . . . >        CAST(regexp_replace(substr(ts_start, 1, 19), 'T', ' ') AS TIMESTAMP) AS ts_start,
+. . . . . . . . . . . . . . . . >        duration_s, rider_id, vehicle_id, station_start, station_end, barrio_start, barrio_end,
+. . . . . . . . . . . . . . . . >        km, fare_ars, clima_codigo,
+. . . . . . . . . . . . . . . . >        substr(ts_start, 1, 10) AS fecha
+. . . . . . . . . . . . . . . . > FROM bronze_viajes
+. . . . . . . . . . . . . . . . > WHERE duration_s BETWEEN 30 AND 14400
+. . . . . . . . . . . . . . . . >   AND station_start IS NOT NULL AND station_end IS NOT NULL
+. . . . . . . . . . . . . . . . >   AND fare_ars >= 0;
+INFO  : Compiling command(queryId=hive_20261119181922_df33ff49-0bab-4b12-a7b1-9275967c05f8): INSERT OVERWRITE TABLE silver_viajes PARTITION (fecha)
+SELECT ride_id,
+CAST(regexp_replace(substr(ts_start, 1, 19), 'T', ' ') AS TIMESTAMP) AS ts_start,
+duration_s, rider_id, vehicle_id, station_start, station_end, barrio_start, barrio_end,
+km, fare_ars, clima_codigo,
+substr(ts_start, 1, 10) AS fecha
+FROM bronze_viajes
+WHERE duration_s BETWEEN 30 AND 14400
+AND station_start IS NOT NULL AND station_end IS NOT NULL
+AND fare_ars >= 0
+INFO  : No Stats for nexo@bronze_viajes, Columns: ride_id, km, station_start, barrio_start, fare_ars, clima_codigo, station_end, barrio_end, rider_id, vehicle_id, ts_start, duration_s
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:ride_id, type:string, comment:null), FieldSchema(name:ts_start, type:timestamp, comment:null), FieldSchema(name:duration_s, type:int, comment:null), FieldSchema(name:rider_id, type:string, comment:null), FieldSchema(name:vehicle_id, type:string, comment:null), FieldSchema(name:station_start, type:string, comment:null), FieldSchema(name:station_end, type:string, comment:null), FieldSchema(name:barrio_start, type:string, comment:null), FieldSchema(name:barrio_end, type:string, comment:null), FieldSchema(name:km, type:double, comment:null), FieldSchema(name:fare_ars, type:double, comment:null), FieldSchema(name:clima_codigo, type:int, comment:null), FieldSchema(name:fecha, type:string, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119181922_df33ff49-0bab-4b12-a7b1-9275967c05f8); Time taken: 0.578 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119181922_df33ff49-0bab-4b12-a7b1-9275967c05f8): INSERT OVERWRITE TABLE silver_viajes PARTITION (fecha)
+SELECT ride_id,
+CAST(regexp_replace(substr(ts_start, 1, 19), 'T', ' ') AS TIMESTAMP) AS ts_start,
+duration_s, rider_id, vehicle_id, station_start, station_end, barrio_start, barrio_end,
+km, fare_ars, clima_codigo,
+substr(ts_start, 1, 10) AS fecha
+FROM bronze_viajes
+WHERE duration_s BETWEEN 30 AND 14400
+AND station_start IS NOT NULL AND station_end IS NOT NULL
+AND fare_ars >= 0
+INFO  : Query ID = hive_20261119181922_df33ff49-0bab-4b12-a7b1-9275967c05f8
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Subscribed to counters: [] for queryId: hive_20261119181922_df33ff49-0bab-4b12-a7b1-9275967c05f8
+INFO  : Session is already open
+INFO  : Dag name: INSERT OVERWRITE TABL......AND fare_ars >= 0 (Stage-1)
+INFO  : Modified tez.runtime.io.sort.mb to 50
+INFO  : HS2 Host: [cb26545fc91e], Query ID: [hive_20261119181922_df33ff49-0bab-4b12-a7b1-9275967c05f8], Dag ID: [dag_1795112358816_0001_2], DAG Session ID: [application_1795112358816_0001]
+INFO  : Status: Running (Executing on YARN cluster with App id application_1795112358816_0001)
+
+[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 0.90 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 1.41 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 1.91 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 2.41 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 2.91 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 3.42 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 3.92 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 4.42 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 4.92 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 5.42 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 5.93 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 6.43 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 6.93 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 7.43 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 7.94 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 8.44 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 8.94 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 9.44 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 10.44 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 11.44 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 12.45 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 13.45 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 14.45 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 15.45 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 16.46 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 17.46 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 18.46 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 19.46 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 20.96 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 22.47 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 23.97 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 25.47 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 26.97 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 28.48 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 29.98 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 31.98 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 33.98 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 35.98 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 37.99 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 39.99 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 42.49 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 44.99 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 47.49 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container       RUNNING      1          0        1        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/03  [=================>>---------] 66%   ELAPSED TIME: 50.00 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 03/03  [==========================>>] 100%  ELAPSED TIME: 53.00 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+INFO  : Starting task [Stage-2:DEPENDENCY_COLLECTION] in serial mode
+INFO  : Starting task [Stage-0:MOVE] in serial mode
+INFO  : Loading data to table nexo.silver_viajes partition (fecha=null) from hdfs://namenode:8020/user/hive/warehouse/nexo.db/silver_viajes/.hive-staging_hive_2026-11-19_18-19-22_446_2308405084280027421-2/-ext-10000
+INFO  : 
+
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 03/03  [==========================>>] 100%  ELAPSED TIME: 56.00 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 03/03  [==========================>>] 100%  ELAPSED TIME: 59.00 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+INFO  : 	 Time taken to load dynamic partitions: 4.771 seconds
+INFO  : 	 Time taken for adding to write entity : 0.006 seconds
+INFO  : Starting task [Stage-3:STATS] in serial mode
+INFO  : Executing stats task
+INFO  : Partition {fecha=2026-03-01} stats: [numFiles=1, numRows=10945, totalSize=390538, rawDataSize=388363, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-02} stats: [numFiles=1, numRows=10928, totalSize=390174, rawDataSize=387999, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-03} stats: [numFiles=1, numRows=11028, totalSize=393364, rawDataSize=391189, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-04} stats: [numFiles=1, numRows=10875, totalSize=388180, rawDataSize=386005, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-05} stats: [numFiles=1, numRows=10928, totalSize=389986, rawDataSize=387811, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-06} stats: [numFiles=1, numRows=10934, totalSize=389745, rawDataSize=387570, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-07} stats: [numFiles=1, numRows=10827, totalSize=387001, rawDataSize=384826, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-08} stats: [numFiles=1, numRows=10941, totalSize=390390, rawDataSize=388215, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-09} stats: [numFiles=1, numRows=10868, totalSize=388374, rawDataSize=386199, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-10} stats: [numFiles=1, numRows=10889, totalSize=388821, rawDataSize=386646, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-11} stats: [numFiles=1, numRows=10925, totalSize=389922, rawDataSize=387747, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-12} stats: [numFiles=1, numRows=10921, totalSize=389634, rawDataSize=387459, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-13} stats: [numFiles=1, numRows=10849, totalSize=387580, rawDataSize=385405, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-14} stats: [numFiles=1, numRows=10978, totalSize=391392, rawDataSize=389217, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-15} stats: [numFiles=1, numRows=10837, totalSize=387348, rawDataSize=385173, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-16} stats: [numFiles=1, numRows=10848, totalSize=387632, rawDataSize=385457, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-17} stats: [numFiles=1, numRows=10943, totalSize=390437, rawDataSize=388262, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-18} stats: [numFiles=1, numRows=10738, totalSize=384183, rawDataSize=382008, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-19} stats: [numFiles=1, numRows=10822, totalSize=386618, rawDataSize=384443, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-20} stats: [numFiles=1, numRows=10814, totalSize=386448, rawDataSize=384273, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-21} stats: [numFiles=1, numRows=10922, totalSize=389872, rawDataSize=387697, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-22} stats: [numFiles=1, numRows=10808, totalSize=386162, rawDataSize=383987, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-23} stats: [numFiles=1, numRows=10864, totalSize=388391, rawDataSize=386216, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-24} stats: [numFiles=1, numRows=10836, totalSize=387444, rawDataSize=385269, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-25} stats: [numFiles=1, numRows=10910, totalSize=389872, rawDataSize=387697, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-26} stats: [numFiles=1, numRows=11067, totalSize=394834, rawDataSize=392659, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-27} stats: [numFiles=1, numRows=10936, totalSize=390403, rawDataSize=388228, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-28} stats: [numFiles=1, numRows=10822, totalSize=386964, rawDataSize=384789, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-29} stats: [numFiles=1, numRows=10781, totalSize=385153, rawDataSize=382978, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-30} stats: [numFiles=1, numRows=10838, totalSize=387222, rawDataSize=385047, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-03-31} stats: [numFiles=1, numRows=10862, totalSize=387036, rawDataSize=384861, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-01} stats: [numFiles=1, numRows=10785, totalSize=385967, rawDataSize=383792, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-02} stats: [numFiles=1, numRows=10856, totalSize=387436, rawDataSize=385261, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-03} stats: [numFiles=1, numRows=10905, totalSize=389481, rawDataSize=387306, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-04} stats: [numFiles=1, numRows=10786, totalSize=385791, rawDataSize=383616, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-05} stats: [numFiles=1, numRows=10813, totalSize=386298, rawDataSize=384123, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-06} stats: [numFiles=1, numRows=10947, totalSize=390918, rawDataSize=388743, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-07} stats: [numFiles=1, numRows=11018, totalSize=392846, rawDataSize=390671, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-08} stats: [numFiles=1, numRows=10819, totalSize=386631, rawDataSize=384456, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-09} stats: [numFiles=1, numRows=10782, totalSize=385836, rawDataSize=383661, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-10} stats: [numFiles=1, numRows=10960, totalSize=391232, rawDataSize=389057, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-11} stats: [numFiles=1, numRows=10809, totalSize=385849, rawDataSize=383674, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-12} stats: [numFiles=1, numRows=10863, totalSize=387961, rawDataSize=385786, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-13} stats: [numFiles=1, numRows=10871, totalSize=388256, rawDataSize=386081, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-14} stats: [numFiles=1, numRows=10947, totalSize=390471, rawDataSize=388296, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-15} stats: [numFiles=1, numRows=10979, totalSize=391536, rawDataSize=389361, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-16} stats: [numFiles=1, numRows=10821, totalSize=386761, rawDataSize=384586, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-17} stats: [numFiles=1, numRows=10849, totalSize=387757, rawDataSize=385582, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-18} stats: [numFiles=1, numRows=10665, totalSize=381811, rawDataSize=379636, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-19} stats: [numFiles=1, numRows=11016, totalSize=392404, rawDataSize=390229, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-20} stats: [numFiles=1, numRows=10866, totalSize=388503, rawDataSize=386328, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-21} stats: [numFiles=1, numRows=10830, totalSize=387466, rawDataSize=385291, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-22} stats: [numFiles=1, numRows=10853, totalSize=387556, rawDataSize=385381, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-23} stats: [numFiles=1, numRows=10817, totalSize=386811, rawDataSize=384636, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-24} stats: [numFiles=1, numRows=10975, totalSize=391436, rawDataSize=389261, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-25} stats: [numFiles=1, numRows=10771, totalSize=385111, rawDataSize=382936, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-26} stats: [numFiles=1, numRows=10609, totalSize=380174, rawDataSize=377999, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-27} stats: [numFiles=1, numRows=11031, totalSize=393372, rawDataSize=391197, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-28} stats: [numFiles=1, numRows=10948, totalSize=390697, rawDataSize=388522, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-29} stats: [numFiles=1, numRows=11062, totalSize=393526, rawDataSize=391351, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-04-30} stats: [numFiles=1, numRows=11039, totalSize=393973, rawDataSize=391798, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-01} stats: [numFiles=1, numRows=10835, totalSize=387298, rawDataSize=385123, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-02} stats: [numFiles=1, numRows=11056, totalSize=393568, rawDataSize=391393, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-03} stats: [numFiles=1, numRows=10975, totalSize=391562, rawDataSize=389387, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-04} stats: [numFiles=1, numRows=11017, totalSize=392797, rawDataSize=390622, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-05} stats: [numFiles=1, numRows=10792, totalSize=385525, rawDataSize=383350, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-06} stats: [numFiles=1, numRows=10900, totalSize=388985, rawDataSize=386810, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-07} stats: [numFiles=1, numRows=10771, totalSize=385590, rawDataSize=383415, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-08} stats: [numFiles=1, numRows=10765, totalSize=385089, rawDataSize=382914, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-09} stats: [numFiles=1, numRows=11099, totalSize=395807, rawDataSize=393632, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-10} stats: [numFiles=1, numRows=10941, totalSize=390205, rawDataSize=388030, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-11} stats: [numFiles=1, numRows=10878, totalSize=388269, rawDataSize=386094, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-12} stats: [numFiles=1, numRows=10817, totalSize=386369, rawDataSize=384194, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-13} stats: [numFiles=1, numRows=10930, totalSize=390536, rawDataSize=388361, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-14} stats: [numFiles=1, numRows=10823, totalSize=386868, rawDataSize=384693, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-15} stats: [numFiles=1, numRows=10773, totalSize=385598, rawDataSize=383423, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-16} stats: [numFiles=1, numRows=10905, totalSize=389460, rawDataSize=387285, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-17} stats: [numFiles=1, numRows=10907, totalSize=389028, rawDataSize=386853, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-18} stats: [numFiles=1, numRows=11017, totalSize=393028, rawDataSize=390853, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-19} stats: [numFiles=1, numRows=10932, totalSize=390236, rawDataSize=388061, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-20} stats: [numFiles=1, numRows=10899, totalSize=389380, rawDataSize=387205, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-21} stats: [numFiles=1, numRows=10837, totalSize=387015, rawDataSize=384840, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-22} stats: [numFiles=1, numRows=10875, totalSize=388576, rawDataSize=386401, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-23} stats: [numFiles=1, numRows=10651, totalSize=381313, rawDataSize=379138, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-24} stats: [numFiles=1, numRows=10893, totalSize=389188, rawDataSize=387013, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-25} stats: [numFiles=1, numRows=11107, totalSize=395578, rawDataSize=393403, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-26} stats: [numFiles=1, numRows=10925, totalSize=389872, rawDataSize=387697, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-27} stats: [numFiles=1, numRows=10812, totalSize=386393, rawDataSize=384218, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-28} stats: [numFiles=1, numRows=10890, totalSize=388681, rawDataSize=386506, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-29} stats: [numFiles=1, numRows=11020, totalSize=392806, rawDataSize=390631, numFilesErasureCoded=0]
+INFO  : Partition {fecha=2026-05-30} stats: [numFiles=1, numRows=9, totalSize=3320, rawDataSize=1260, numFilesErasureCoded=0]
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 03/03  [==========================>>] 100%  ELAPSED TIME: 61.03 s    
+[22;0m[2K----------------------------------------------------------------------------------------------
+INFO  : Completed executing command(queryId=hive_20261119181922_df33ff49-0bab-4b12-a7b1-9275967c05f8); Time taken: 61.231 seconds
+979,827 rows affected (61.816 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> SELECT COUNT(*) AS filas_silver FROM silver_viajes;
+INFO  : Compiling command(queryId=hive_20261119182024_e80522ef-3e40-4d1f-9560-bca2088cb4a8): SELECT COUNT(*) AS filas_silver FROM silver_viajes
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:filas_silver, type:bigint, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182024_e80522ef-3e40-4d1f-9560-bca2088cb4a8); Time taken: 0.213 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182024_e80522ef-3e40-4d1f-9560-bca2088cb4a8): SELECT COUNT(*) AS filas_silver FROM silver_viajes
+INFO  : Query ID = hive_20261119182024_e80522ef-3e40-4d1f-9560-bca2088cb4a8
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Subscribed to counters: [] for queryId: hive_20261119182024_e80522ef-3e40-4d1f-9560-bca2088cb4a8
+INFO  : Session is already open
+INFO  : Dag name: SELECT COUNT(*) AS fi......ROM silver_viajes (Stage-1)
+INFO  : HS2 Host: [cb26545fc91e], Query ID: [hive_20261119182024_e80522ef-3e40-4d1f-9560-bca2088cb4a8], Dag ID: [dag_1795112358816_0001_3], DAG Session ID: [application_1795112358816_0001]
+INFO  : Status: Running (Executing on YARN cluster with App id application_1795112358816_0001)
+
+[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/02  [>>--------------------------] 0%    ELAPSED TIME: 1.46 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[8A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/02  [==========================>>] 100%  ELAPSED TIME: 1.83 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+INFO  : Completed executing command(queryId=hive_20261119182024_e80522ef-3e40-4d1f-9560-bca2088cb4a8); Time taken: 1.879 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++---------------+
+| filas_silver  |
++---------------+
+| 979827        |
++---------------+
+1 row selected (2.106 seconds)
+0: jdbc:hive2://localhost:10000/> SHOW PARTITIONS silver_viajes;
+INFO  : Compiling command(queryId=hive_20261119182026_ad1f9ff7-fa6e-494e-b9f5-eb6a85d755d5): SHOW PARTITIONS silver_viajes
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:partition, type:string, comment:from deserializer)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182026_ad1f9ff7-fa6e-494e-b9f5-eb6a85d755d5); Time taken: 0.023 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182026_ad1f9ff7-fa6e-494e-b9f5-eb6a85d755d5): SHOW PARTITIONS silver_viajes
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119182026_ad1f9ff7-fa6e-494e-b9f5-eb6a85d755d5); Time taken: 0.025 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++-------------------+
+|     partition     |
++-------------------+
+| fecha=2026-03-01  |
+| fecha=2026-03-02  |
+| fecha=2026-03-03  |
+| fecha=2026-03-04  |
+| fecha=2026-03-05  |
+| fecha=2026-03-06  |
+| fecha=2026-03-07  |
+| fecha=2026-03-08  |
+| fecha=2026-03-09  |
+| fecha=2026-03-10  |
+| fecha=2026-03-11  |
+| fecha=2026-03-12  |
+| fecha=2026-03-13  |
+| fecha=2026-03-14  |
+| fecha=2026-03-15  |
+| fecha=2026-03-16  |
+| fecha=2026-03-17  |
+| fecha=2026-03-18  |
+| fecha=2026-03-19  |
+| fecha=2026-03-20  |
+| fecha=2026-03-21  |
+| fecha=2026-03-22  |
+| fecha=2026-03-23  |
+| fecha=2026-03-24  |
+| fecha=2026-03-25  |
+| fecha=2026-03-26  |
+| fecha=2026-03-27  |
+| fecha=2026-03-28  |
+| fecha=2026-03-29  |
+| fecha=2026-03-30  |
+| fecha=2026-03-31  |
+| fecha=2026-04-01  |
+| fecha=2026-04-02  |
+| fecha=2026-04-03  |
+| fecha=2026-04-04  |
+| fecha=2026-04-05  |
+| fecha=2026-04-06  |
+| fecha=2026-04-07  |
+| fecha=2026-04-08  |
+| fecha=2026-04-09  |
+| fecha=2026-04-10  |
+| fecha=2026-04-11  |
+| fecha=2026-04-12  |
+| fecha=2026-04-13  |
+| fecha=2026-04-14  |
+| fecha=2026-04-15  |
+| fecha=2026-04-16  |
+| fecha=2026-04-17  |
+| fecha=2026-04-18  |
+| fecha=2026-04-19  |
+| fecha=2026-04-20  |
+| fecha=2026-04-21  |
+| fecha=2026-04-22  |
+| fecha=2026-04-23  |
+| fecha=2026-04-24  |
+| fecha=2026-04-25  |
+| fecha=2026-04-26  |
+| fecha=2026-04-27  |
+| fecha=2026-04-28  |
+| fecha=2026-04-29  |
+| fecha=2026-04-30  |
+| fecha=2026-05-01  |
+| fecha=2026-05-02  |
+| fecha=2026-05-03  |
+| fecha=2026-05-04  |
+| fecha=2026-05-05  |
+| fecha=2026-05-06  |
+| fecha=2026-05-07  |
+| fecha=2026-05-08  |
+| fecha=2026-05-09  |
+| fecha=2026-05-10  |
+| fecha=2026-05-11  |
+| fecha=2026-05-12  |
+| fecha=2026-05-13  |
+| fecha=2026-05-14  |
+| fecha=2026-05-15  |
+| fecha=2026-05-16  |
+| fecha=2026-05-17  |
+| fecha=2026-05-18  |
+| fecha=2026-05-19  |
+| fecha=2026-05-20  |
+| fecha=2026-05-21  |
+| fecha=2026-05-22  |
+| fecha=2026-05-23  |
+| fecha=2026-05-24  |
+| fecha=2026-05-25  |
+| fecha=2026-05-26  |
+| fecha=2026-05-27  |
+| fecha=2026-05-28  |
+| fecha=2026-05-29  |
+| fecha=2026-05-30  |
++-------------------+
+91 rows selected (0.069 seconds)
+0: jdbc:hive2://localhost:10000/> DESCRIBE FORMATTED silver_viajes;
+INFO  : Compiling command(queryId=hive_20261119182026_d6c7b874-0acf-4dff-afe0-402f73ccb5d9): DESCRIBE FORMATTED silver_viajes
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:col_name, type:string, comment:from deserializer), FieldSchema(name:data_type, type:string, comment:from deserializer), FieldSchema(name:comment, type:string, comment:from deserializer)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182026_d6c7b874-0acf-4dff-afe0-402f73ccb5d9); Time taken: 0.015 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182026_d6c7b874-0acf-4dff-afe0-402f73ccb5d9): DESCRIBE FORMATTED silver_viajes
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119182026_d6c7b874-0acf-4dff-afe0-402f73ccb5d9); Time taken: 0.089 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++-------------------------------+----------------------------------------------------+-----------------------------+
+|           col_name            |                     data_type                      |           comment           |
++-------------------------------+----------------------------------------------------+-----------------------------+
+| ride_id                       | string                                             |                             |
+| ts_start                      | timestamp                                          |                             |
+| duration_s                    | int                                                |                             |
+| rider_id                      | string                                             |                             |
+| vehicle_id                    | string                                             |                             |
+| station_start                 | string                                             |                             |
+| station_end                   | string                                             |                             |
+| barrio_start                  | string                                             |                             |
+| barrio_end                    | string                                             |                             |
+| km                            | double                                             |                             |
+| fare_ars                      | double                                             |                             |
+| clima_codigo                  | int                                                |                             |
+|                               | NULL                                               | NULL                        |
+| # Partition Information       | NULL                                               | NULL                        |
+| # col_name                    | data_type                                          | comment                     |
+| fecha                         | string                                             |                             |
+|                               | NULL                                               | NULL                        |
+| # Detailed Table Information  | NULL                                               | NULL                        |
+| Database:                     | nexo                                               | NULL                        |
+| OwnerType:                    | USER                                               | NULL                        |
+| Owner:                        | hive                                               | NULL                        |
+| CreateTime:                   | Thu Nov 19 18:19:22 UTC 2026                       | NULL                        |
+| LastAccessTime:               | UNKNOWN                                            | NULL                        |
+| Retention:                    | 0                                                  | NULL                        |
+| Location:                     | hdfs://namenode:8020/user/hive/warehouse/nexo.db/silver_viajes | NULL                        |
+| Table Type:                   | EXTERNAL_TABLE                                     | NULL                        |
+| Table Parameters:             | NULL                                               | NULL                        |
+|                               | COLUMN_STATS_ACCURATE                              | {\"BASIC_STATS\":\"true\"}  |
+|                               | EXTERNAL                                           | TRUE                        |
+|                               | TRANSLATED_TO_EXTERNAL                             | TRUE                        |
+|                               | bucketing_version                                  | 2                           |
+|                               | external.table.purge                               | TRUE                        |
+|                               | numFiles                                           | 91                          |
+|                               | numPartitions                                      | 91                          |
+|                               | numRows                                            | 979827                      |
+|                               | rawDataSize                                        | 34795117                    |
+|                               | totalSize                                          | 34992927                    |
+|                               | transient_lastDdlTime                              | 1795112362                  |
+|                               | NULL                                               | NULL                        |
+| # Storage Information         | NULL                                               | NULL                        |
+| SerDe Library:                | org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe | NULL                        |
+| InputFormat:                  | org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat | NULL                        |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat | NULL                        |
+| Compressed:                   | No                                                 | NULL                        |
+| Num Buckets:                  | -1                                                 | NULL                        |
+| Bucket Columns:               | []                                                 | NULL                        |
+| Sort Columns:                 | []                                                 | NULL                        |
+| Storage Desc Params:          | NULL                                               | NULL                        |
+|                               | serialization.format                               | 1                           |
++-------------------------------+----------------------------------------------------+-----------------------------+
+49 rows selected (0.126 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> -- 3a) Estaciones con más destinos distintos (y volumen)
+0: jdbc:hive2://localhost:10000/> SELECT station_start,
+. . . . . . . . . . . . . . . . >        COUNT(DISTINCT station_end) AS destinos_distintos,
+. . . . . . . . . . . . . . . . >        COUNT(*) AS viajes
+. . . . . . . . . . . . . . . . > FROM silver_viajes
+. . . . . . . . . . . . . . . . > GROUP BY station_start
+. . . . . . . . . . . . . . . . > ORDER BY destinos_distintos DESC, viajes DESC
+. . . . . . . . . . . . . . . . > LIMIT 10;
+INFO  : Compiling command(queryId=hive_20261119182026_4d2b6834-e4e8-4888-8aeb-76a346a7342b): SELECT station_start,
+COUNT(DISTINCT station_end) AS destinos_distintos,
+COUNT(*) AS viajes
+FROM silver_viajes
+GROUP BY station_start
+ORDER BY destinos_distintos DESC, viajes DESC
+LIMIT 10
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:station_start, type:string, comment:null), FieldSchema(name:destinos_distintos, type:bigint, comment:null), FieldSchema(name:viajes, type:bigint, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182026_4d2b6834-e4e8-4888-8aeb-76a346a7342b); Time taken: 0.289 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182026_4d2b6834-e4e8-4888-8aeb-76a346a7342b): SELECT station_start,
+COUNT(DISTINCT station_end) AS destinos_distintos,
+COUNT(*) AS viajes
+FROM silver_viajes
+GROUP BY station_start
+ORDER BY destinos_distintos DESC, viajes DESC
+LIMIT 10
+INFO  : Query ID = hive_20261119182026_4d2b6834-e4e8-4888-8aeb-76a346a7342b
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Subscribed to counters: [] for queryId: hive_20261119182026_4d2b6834-e4e8-4888-8aeb-76a346a7342b
+INFO  : Session is already open
+INFO  : Dag name: SELECT station_start,......jes DESC
+LIMIT 10 (Stage-1)
+INFO  : HS2 Host: [cb26545fc91e], Query ID: [hive_20261119182026_4d2b6834-e4e8-4888-8aeb-76a346a7342b], Dag ID: [dag_1795112358816_0001_4], DAG Session ID: [application_1795112358816_0001]
+INFO  : Status: Running (Executing on YARN cluster with App id application_1795112358816_0001)
+
+[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 1.43 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 01/03  [========>>------------------] 33%   ELAPSED TIME: 1.93 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 03/03  [==========================>>] 100%  ELAPSED TIME: 2.37 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+INFO  : Completed executing command(queryId=hive_20261119182026_4d2b6834-e4e8-4888-8aeb-76a346a7342b); Time taken: 2.437 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++----------------+---------------------+---------+
+| station_start  | destinos_distintos  | viajes  |
++----------------+---------------------+---------+
+| ST000          | 24                  | 41172   |
+| ST019          | 24                  | 41131   |
+| ST002          | 24                  | 41092   |
+| ST013          | 24                  | 41088   |
+| ST023          | 24                  | 41043   |
+| ST001          | 24                  | 41014   |
+| ST011          | 24                  | 40984   |
+| ST010          | 24                  | 40971   |
+| ST004          | 24                  | 40966   |
+| ST006          | 24                  | 40944   |
++----------------+---------------------+---------+
+10 rows selected (2.742 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> -- 3b) Viajes de más de 45 minutos
+0: jdbc:hive2://localhost:10000/> SELECT l.viajes_mas_45_min,
+. . . . . . . . . . . . . . . . >        ROUND(100 * l.viajes_mas_45_min / t.total, 3) AS pct_del_total,
+. . . . . . . . . . . . . . . . >        l.duracion_media_min
+. . . . . . . . . . . . . . . . > FROM (SELECT COUNT(*) AS viajes_mas_45_min, ROUND(AVG(duration_s) / 60, 1) AS duracion_media_min
+. . . . . . . . . . . . . . . . >       FROM silver_viajes WHERE duration_s > 45 * 60) l
+. . . . . . . . . . . . . . . . > CROSS JOIN (SELECT COUNT(*) AS total FROM silver_viajes) t;
+INFO  : Compiling command(queryId=hive_20261119182029_2d165b7c-2121-4396-93c7-3f58a91f6550): SELECT l.viajes_mas_45_min,
+ROUND(100 * l.viajes_mas_45_min / t.total, 3) AS pct_del_total,
+l.duracion_media_min
+FROM (SELECT COUNT(*) AS viajes_mas_45_min, ROUND(AVG(duration_s) / 60, 1) AS duracion_media_min
+FROM silver_viajes WHERE duration_s > 45 * 60) l
+CROSS JOIN (SELECT COUNT(*) AS total FROM silver_viajes) t
+INFO  : Warning: Map Join MAPJOIN[19][bigTable=?] in task 'Reducer 2' is a cross product
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:l.viajes_mas_45_min, type:bigint, comment:null), FieldSchema(name:pct_del_total, type:double, comment:null), FieldSchema(name:l.duracion_media_min, type:double, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182029_2d165b7c-2121-4396-93c7-3f58a91f6550); Time taken: 0.414 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182029_2d165b7c-2121-4396-93c7-3f58a91f6550): SELECT l.viajes_mas_45_min,
+ROUND(100 * l.viajes_mas_45_min / t.total, 3) AS pct_del_total,
+l.duracion_media_min
+FROM (SELECT COUNT(*) AS viajes_mas_45_min, ROUND(AVG(duration_s) / 60, 1) AS duracion_media_min
+FROM silver_viajes WHERE duration_s > 45 * 60) l
+CROSS JOIN (SELECT COUNT(*) AS total FROM silver_viajes) t
+INFO  : Query ID = hive_20261119182029_2d165b7c-2121-4396-93c7-3f58a91f6550
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Subscribed to counters: [] for queryId: hive_20261119182029_2d165b7c-2121-4396-93c7-3f58a91f6550
+INFO  : Session is already open
+INFO  : Dag name: SELECT l.viajes_mas_4...... silver_viajes) t (Stage-1)
+INFO  : Setting tez.task.scale.memory.reserve-fraction to 0.30000001192092896
+INFO  : Modified tez.runtime.io.sort.mb to 50
+INFO  : HS2 Host: [cb26545fc91e], Query ID: [hive_20261119182029_2d165b7c-2121-4396-93c7-3f58a91f6550], Dag ID: [dag_1795112358816_0001_5], DAG Session ID: [application_1795112358816_0001]
+INFO  : Status: Running (Executing on YARN cluster with App id application_1795112358816_0001)
+
+[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 1.42 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 03/03  [==========================>>] 100%  ELAPSED TIME: 1.80 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+INFO  : Completed executing command(queryId=hive_20261119182029_2d165b7c-2121-4396-93c7-3f58a91f6550); Time taken: 1.879 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++----------------------+----------------+-----------------------+
+| l.viajes_mas_45_min  | pct_del_total  | l.duracion_media_min  |
++----------------------+----------------+-----------------------+
+| 291                  | 0.03           | 54.8                  |
++----------------------+----------------+-----------------------+
+1 row selected (2.319 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> SELECT ride_id, ts_start, station_start, station_end, ROUND(duration_s / 60, 1) AS minutos, fare_ars
+. . . . . . . . . . . . . . . . > FROM silver_viajes
+. . . . . . . . . . . . . . . . > WHERE duration_s > 45 * 60
+. . . . . . . . . . . . . . . . > ORDER BY duration_s DESC
+. . . . . . . . . . . . . . . . > LIMIT 10;
+INFO  : Compiling command(queryId=hive_20261119182031_d32bad31-b8ef-4068-9aaf-c670e347f702): SELECT ride_id, ts_start, station_start, station_end, ROUND(duration_s / 60, 1) AS minutos, fare_ars
+FROM silver_viajes
+WHERE duration_s > 45 * 60
+ORDER BY duration_s DESC
+LIMIT 10
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:ride_id, type:string, comment:null), FieldSchema(name:ts_start, type:timestamp, comment:null), FieldSchema(name:station_start, type:string, comment:null), FieldSchema(name:station_end, type:string, comment:null), FieldSchema(name:minutos, type:double, comment:null), FieldSchema(name:fare_ars, type:double, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182031_d32bad31-b8ef-4068-9aaf-c670e347f702); Time taken: 0.268 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182031_d32bad31-b8ef-4068-9aaf-c670e347f702): SELECT ride_id, ts_start, station_start, station_end, ROUND(duration_s / 60, 1) AS minutos, fare_ars
+FROM silver_viajes
+WHERE duration_s > 45 * 60
+ORDER BY duration_s DESC
+LIMIT 10
+INFO  : Query ID = hive_20261119182031_d32bad31-b8ef-4068-9aaf-c670e347f702
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Subscribed to counters: [] for queryId: hive_20261119182031_d32bad31-b8ef-4068-9aaf-c670e347f702
+INFO  : Session is already open
+INFO  : Dag name: SELECT ride_id, ts_st......n_s DESC
+LIMIT 10 (Stage-1)
+INFO  : HS2 Host: [cb26545fc91e], Query ID: [hive_20261119182031_d32bad31-b8ef-4068-9aaf-c670e347f702], Dag ID: [dag_1795112358816_0001_6], DAG Session ID: [application_1795112358816_0001]
+INFO  : Status: Running (Executing on YARN cluster with App id application_1795112358816_0001)
+
+[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/02  [>>--------------------------] 0%    ELAPSED TIME: 1.46 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[8A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/02  [>>--------------------------] 0%    ELAPSED TIME: 1.96 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[8A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/02  [==========================>>] 100%  ELAPSED TIME: 2.02 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+INFO  : Completed executing command(queryId=hive_20261119182031_d32bad31-b8ef-4068-9aaf-c670e347f702); Time taken: 2.068 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++-----------+------------------------+----------------+--------------+----------+-----------+
+|  ride_id  |        ts_start        | station_start  | station_end  | minutos  | fare_ars  |
++-----------+------------------------+----------------+--------------+----------+-----------+
+| T0280626  | 2026-03-02 07:07:00.0  | ST014          | ST009        | 142.8    | 3286.61   |
+| T0154846  | 2026-03-25 12:13:00.0  | ST020          | ST003        | 123.0    | 2913.5    |
+| T0237383  | 2026-03-04 11:55:00.0  | ST017          | ST009        | 121.9    | 2852.72   |
+| T0277394  | 2026-04-22 09:52:00.0  | ST012          | ST009        | 119.4    | 2762.16   |
+| T0349753  | 2026-04-28 23:30:00.0  | ST021          | ST009        | 98.4     | 2245.97   |
+| T0376303  | 2026-03-22 21:02:00.0  | ST004          | ST022        | 94.5     | 2348.22   |
+| T0794248  | 2026-05-20 16:49:00.0  | ST017          | ST014        | 94.4     | 2175.56   |
+| T0417849  | 2026-05-17 08:43:00.0  | ST004          | ST006        | 88.3     | 2190.12   |
+| T0609804  | 2026-05-23 15:42:00.0  | ST006          | ST008        | 82.9     | 2011.86   |
+| T0757176  | 2026-05-08 22:15:00.0  | ST005          | ST007        | 81.2     | 2111.65   |
++-----------+------------------------+----------------+--------------+----------+-----------+
+10 rows selected (2.353 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> -- 3c) Hora × barrio: conteo y duración media
+0: jdbc:hive2://localhost:10000/> SELECT HOUR(ts_start) AS hora, barrio_start,
+. . . . . . . . . . . . . . . . >        COUNT(*) AS viajes,
+. . . . . . . . . . . . . . . . >        ROUND(AVG(duration_s) / 60, 2) AS duracion_media_min
+. . . . . . . . . . . . . . . . > FROM silver_viajes
+. . . . . . . . . . . . . . . . > GROUP BY HOUR(ts_start), barrio_start
+. . . . . . . . . . . . . . . . > ORDER BY viajes DESC
+. . . . . . . . . . . . . . . . > LIMIT 20;
+INFO  : Compiling command(queryId=hive_20261119182034_443149c9-eaf4-4daa-8065-a0d7d763500f): SELECT HOUR(ts_start) AS hora, barrio_start,
+COUNT(*) AS viajes,
+ROUND(AVG(duration_s) / 60, 2) AS duracion_media_min
+FROM silver_viajes
+GROUP BY HOUR(ts_start), barrio_start
+ORDER BY viajes DESC
+LIMIT 20
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:hora, type:int, comment:null), FieldSchema(name:barrio_start, type:string, comment:null), FieldSchema(name:viajes, type:bigint, comment:null), FieldSchema(name:duracion_media_min, type:double, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182034_443149c9-eaf4-4daa-8065-a0d7d763500f); Time taken: 0.218 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182034_443149c9-eaf4-4daa-8065-a0d7d763500f): SELECT HOUR(ts_start) AS hora, barrio_start,
+COUNT(*) AS viajes,
+ROUND(AVG(duration_s) / 60, 2) AS duracion_media_min
+FROM silver_viajes
+GROUP BY HOUR(ts_start), barrio_start
+ORDER BY viajes DESC
+LIMIT 20
+INFO  : Query ID = hive_20261119182034_443149c9-eaf4-4daa-8065-a0d7d763500f
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Subscribed to counters: [] for queryId: hive_20261119182034_443149c9-eaf4-4daa-8065-a0d7d763500f
+INFO  : Session is already open
+INFO  : Dag name: SELECT HOUR(ts_start)......jes DESC
+LIMIT 20 (Stage-1)
+INFO  : HS2 Host: [cb26545fc91e], Query ID: [hive_20261119182034_443149c9-eaf4-4daa-8065-a0d7d763500f], Dag ID: [dag_1795112358816_0001_7], DAG Session ID: [application_1795112358816_0001]
+INFO  : Status: Running (Executing on YARN cluster with App id application_1795112358816_0001)
+
+[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 1.45 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 1.95 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 03/03  [==========================>>] 100%  ELAPSED TIME: 2.35 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+INFO  : Completed executing command(queryId=hive_20261119182034_443149c9-eaf4-4daa-8065-a0d7d763500f); Time taken: 2.408 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++-------+---------------+---------+---------------------+
+| hora  | barrio_start  | viajes  | duracion_media_min  |
++-------+---------------+---------+---------------------+
+| 14    | Caballito     | 3559    | 5.22                |
+| 0     | Palermo       | 3555    | 5.15                |
+| 19    | Colegiales    | 3548    | 5.24                |
+| 0     | Retiro        | 3542    | 5.14                |
+| 23    | Nunez         | 3541    | 5.14                |
+| 19    | Chacarita     | 3528    | 5.39                |
+| 7     | Recoleta      | 3527    | 5.24                |
+| 10    | Palermo       | 3524    | 5.3                 |
+| 13    | Colegiales    | 3522    | 5.17                |
+| 6     | Recoleta      | 3518    | 5.25                |
+| 6     | Caballito     | 3516    | 5.21                |
+| 12    | Recoleta      | 3514    | 5.32                |
+| 7     | Chacarita     | 3512    | 5.17                |
+| 11    | Chacarita     | 3512    | 5.18                |
+| 13    | Microcentro   | 3511    | 5.15                |
+| 15    | Palermo       | 3509    | 5.14                |
+| 15    | San Telmo     | 3506    | 5.28                |
+| 13    | Nunez         | 3504    | 5.14                |
+| 19    | Microcentro   | 3504    | 5.25                |
+| 8     | Palermo       | 3504    | 5.1                 |
++-------+---------------+---------+---------------------+
+20 rows selected (2.65 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> -- Insumo de M14 P5: facturación de viajes por mes (Hive)
+0: jdbc:hive2://localhost:10000/> SELECT substr(fecha, 1, 7) AS mes, COUNT(*) AS viajes, ROUND(SUM(fare_ars), 0) AS facturacion_ars
+. . . . . . . . . . . . . . . . > FROM silver_viajes
+. . . . . . . . . . . . . . . . > GROUP BY substr(fecha, 1, 7)
+. . . . . . . . . . . . . . . . > ORDER BY mes;
+INFO  : Compiling command(queryId=hive_20261119182036_93c3d31a-9673-4be9-87bb-9c96c9163ccc): SELECT substr(fecha, 1, 7) AS mes, COUNT(*) AS viajes, ROUND(SUM(fare_ars), 0) AS facturacion_ars
+FROM silver_viajes
+GROUP BY substr(fecha, 1, 7)
+ORDER BY mes
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:mes, type:string, comment:null), FieldSchema(name:viajes, type:bigint, comment:null), FieldSchema(name:facturacion_ars, type:double, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182036_93c3d31a-9673-4be9-87bb-9c96c9163ccc); Time taken: 0.147 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182036_93c3d31a-9673-4be9-87bb-9c96c9163ccc): SELECT substr(fecha, 1, 7) AS mes, COUNT(*) AS viajes, ROUND(SUM(fare_ars), 0) AS facturacion_ars
+FROM silver_viajes
+GROUP BY substr(fecha, 1, 7)
+ORDER BY mes
+INFO  : Query ID = hive_20261119182036_93c3d31a-9673-4be9-87bb-9c96c9163ccc
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Subscribed to counters: [] for queryId: hive_20261119182036_93c3d31a-9673-4be9-87bb-9c96c9163ccc
+INFO  : Session is already open
+INFO  : Dag name: SELECT substr(fecha, ......, 7)
+ORDER BY mes (Stage-1)
+INFO  : HS2 Host: [cb26545fc91e], Query ID: [hive_20261119182036_93c3d31a-9673-4be9-87bb-9c96c9163ccc], Dag ID: [dag_1795112358816_0001_8], DAG Session ID: [application_1795112358816_0001]
+INFO  : Status: Running (Executing on YARN cluster with App id application_1795112358816_0001)
+
+[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+Reducer 3        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/03  [>>--------------------------] 0%    ELAPSED TIME: 1.59 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[9A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 03/03  [==========================>>] 100%  ELAPSED TIME: 1.90 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+INFO  : Completed executing command(queryId=hive_20261119182036_93c3d31a-9673-4be9-87bb-9c96c9163ccc); Time taken: 1.945 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++----------+---------+------------------+
+|   mes    | viajes  | facturacion_ars  |
++----------+---------+------------------+
+| 2026-03  | 337484  | 1.19044275E8     |
+| 2026-04  | 326292  | 1.15089973E8     |
+| 2026-05  | 316051  | 1.11302814E8     |
++----------+---------+------------------+
+3 rows selected (2.106 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> [WARN] Failed to create directory: /home/hive/.beeline
+No such file or directory
+Closing: 0: jdbc:hive2://localhost:10000/
+
+################ DEMO DROP: externa vs. interna ################
+
+$ hdfs dfs -mkdir -p hdfs://namenode:8020/nexo/bronze/demo_externa
+
+$ hdfs dfs -put -f /nexo/data/viajes_muestra.csv hdfs://namenode:8020/nexo/bronze/demo_externa/
+
+$ beeline -u jdbc:hive2://localhost:10000/ -n hive --showHeader=true --outputformat=table2 -f /nexo/04-hadoop/hive/hive_drop_demo.sql
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Connecting to jdbc:hive2://localhost:10000/
+Connected to: Apache Hive (version 4.0.1)
+Driver: Hive JDBC (version 4.0.1)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://localhost:10000/> -- M6 · Externa vs. interna: qué pasa con los datos al hacer DROP
+0: jdbc:hive2://localhost:10000/> USE nexo;
+INFO  : Compiling command(queryId=hive_20261119182046_73307302-e566-4452-b027-32504bad2d2b): USE nexo
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182046_73307302-e566-4452-b027-32504bad2d2b); Time taken: 0.005 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182046_73307302-e566-4452-b027-32504bad2d2b): USE nexo
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119182046_73307302-e566-4452-b027-32504bad2d2b); Time taken: 0.004 seconds
+No rows affected (0.05 seconds)
+0: jdbc:hive2://localhost:10000/> DROP TABLE IF EXISTS demo_externa;
+INFO  : Compiling command(queryId=hive_20261119182046_fbc81be3-6dfb-4eaf-9705-34eb12a3f10e): DROP TABLE IF EXISTS demo_externa
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182046_fbc81be3-6dfb-4eaf-9705-34eb12a3f10e); Time taken: 0.004 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182046_fbc81be3-6dfb-4eaf-9705-34eb12a3f10e): DROP TABLE IF EXISTS demo_externa
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119182046_fbc81be3-6dfb-4eaf-9705-34eb12a3f10e); Time taken: 0.003 seconds
+No rows affected (0.015 seconds)
+0: jdbc:hive2://localhost:10000/> DROP TABLE IF EXISTS demo_interna;
+INFO  : Compiling command(queryId=hive_20261119182046_f630fbe2-11f4-4a2a-974d-7433bea4e5b5): DROP TABLE IF EXISTS demo_interna
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182046_f630fbe2-11f4-4a2a-974d-7433bea4e5b5); Time taken: 0.003 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182046_f630fbe2-11f4-4a2a-974d-7433bea4e5b5): DROP TABLE IF EXISTS demo_interna
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119182046_f630fbe2-11f4-4a2a-974d-7433bea4e5b5); Time taken: 0.004 seconds
+No rows affected (0.014 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> CREATE EXTERNAL TABLE demo_externa (linea STRING)
+. . . . . . . . . . . . . . . . > STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . > LOCATION 'hdfs://namenode:8020/nexo/bronze/demo_externa';
+INFO  : Compiling command(queryId=hive_20261119182046_fd2c468e-5794-4899-93f2-3ea7f3c807f9): CREATE EXTERNAL TABLE demo_externa (linea STRING)
+STORED AS TEXTFILE
+LOCATION 'hdfs://namenode:8020/nexo/bronze/demo_externa'
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182046_fd2c468e-5794-4899-93f2-3ea7f3c807f9); Time taken: 0.003 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182046_fd2c468e-5794-4899-93f2-3ea7f3c807f9): CREATE EXTERNAL TABLE demo_externa (linea STRING)
+STORED AS TEXTFILE
+LOCATION 'hdfs://namenode:8020/nexo/bronze/demo_externa'
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119182046_fd2c468e-5794-4899-93f2-3ea7f3c807f9); Time taken: 0.234 seconds
+No rows affected (0.245 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> CREATE TABLE demo_interna STORED AS TEXTFILE AS SELECT linea FROM demo_externa;
+INFO  : Compiling command(queryId=hive_20261119182047_a47e0acb-6d81-4653-af74-c0311350ab8f): CREATE TABLE demo_interna STORED AS TEXTFILE AS SELECT linea FROM demo_externa
+INFO  : No Stats for nexo@demo_externa, Columns: linea
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:linea, type:string, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182047_a47e0acb-6d81-4653-af74-c0311350ab8f); Time taken: 0.2 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182047_a47e0acb-6d81-4653-af74-c0311350ab8f): CREATE TABLE demo_interna STORED AS TEXTFILE AS SELECT linea FROM demo_externa
+INFO  : Query ID = hive_20261119182047_a47e0acb-6d81-4653-af74-c0311350ab8f
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Subscribed to counters: [] for queryId: hive_20261119182047_a47e0acb-6d81-4653-af74-c0311350ab8f
+INFO  : Tez session hasn't been created yet. Opening session
+INFO  : Dag name: CREATE TABLE demo_int......FROM demo_externa (Stage-1)
+INFO  : HS2 Host: [cb26545fc91e], Query ID: [hive_20261119182047_a47e0acb-6d81-4653-af74-c0311350ab8f], Dag ID: [dag_1795112447376_0001_1], DAG Session ID: [application_1795112447376_0001]
+INFO  : Status: Running (Executing on YARN cluster with App id application_1795112447376_0001)
+
+[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/02  [>>--------------------------] 0%    ELAPSED TIME: 1.23 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[8A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1            container       RUNNING      1          0        1        0       0       0  
+Reducer 2        container        INITED      1          0        0        1       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 00/02  [>>--------------------------] 0%    ELAPSED TIME: 1.73 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[8A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/02  [==========================>>] 100%  ELAPSED TIME: 2.23 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+[8A[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 02/02  [==========================>>] 100%  ELAPSED TIME: 2.46 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+INFO  : Starting task [Stage-2:DEPENDENCY_COLLECTION] in serial mode
+INFO  : Starting task [Stage-0:MOVE] in serial mode
+INFO  : Moving data to directory hdfs://namenode:8020/user/hive/warehouse/nexo.db/demo_interna from hdfs://namenode:8020/user/hive/warehouse/nexo.db/.hive-staging_hive_2026-11-19_18-20-47_143_8889445223307576219-11/-ext-10002
+INFO  : Starting task [Stage-4:DDL] in serial mode
+INFO  : Starting task [Stage-3:STATS] in serial mode
+INFO  : Executing stats task
+INFO  : Table nexo.demo_interna stats: [numFiles=1, numRows=2001, totalSize=333497, rawDataSize=331496, numFilesErasureCoded=0]
+INFO  : Completed executing command(queryId=hive_20261119182047_a47e0acb-6d81-4653-af74-c0311350ab8f); Time taken: 2.749 seconds
+2,001 rows affected (2.958 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> SELECT 'externa' AS tabla, COUNT(*) AS filas FROM demo_externa
+. . . . . . . . . . . . . . . . > UNION ALL
+. . . . . . . . . . . . . . . . > SELECT 'interna', COUNT(*) FROM demo_interna;
+INFO  : Compiling command(queryId=hive_20261119182050_c330ddc6-4475-4af7-8c8f-7ec80018d417): SELECT 'externa' AS tabla, COUNT(*) AS filas FROM demo_externa
+UNION ALL
+SELECT 'interna', COUNT(*) FROM demo_interna
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:tabla, type:string, comment:null), FieldSchema(name:filas, type:bigint, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182050_c330ddc6-4475-4af7-8c8f-7ec80018d417); Time taken: 0.076 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182050_c330ddc6-4475-4af7-8c8f-7ec80018d417): SELECT 'externa' AS tabla, COUNT(*) AS filas FROM demo_externa
+UNION ALL
+SELECT 'interna', COUNT(*) FROM demo_interna
+INFO  : Query ID = hive_20261119182050_c330ddc6-4475-4af7-8c8f-7ec80018d417
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Subscribed to counters: [] for queryId: hive_20261119182050_c330ddc6-4475-4af7-8c8f-7ec80018d417
+INFO  : Session is already open
+INFO  : Dag name: SELECT 'externa' AS t......FROM demo_interna (Stage-1)
+INFO  : HS2 Host: [cb26545fc91e], Query ID: [hive_20261119182050_c330ddc6-4475-4af7-8c8f-7ec80018d417], Dag ID: [dag_1795112447376_0001_2], DAG Session ID: [application_1795112447376_0001]
+INFO  : Status: Running (Executing on YARN cluster with App id application_1795112447376_0001)
+
+[2K----------------------------------------------------------------------------------------------
+[2K[36;1m        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+[22;0m[2K----------------------------------------------------------------------------------------------
+[2KMap 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+Map 4 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 5 ...... container     SUCCEEDED      1          1        0        0       0       0  
+[2K----------------------------------------------------------------------------------------------
+[2K[31;1mVERTICES: 04/04  [==========================>>] 100%  ELAPSED TIME: 0.96 s     
+[22;0m[2K----------------------------------------------------------------------------------------------
+INFO  : Completed executing command(queryId=hive_20261119182050_c330ddc6-4475-4af7-8c8f-7ec80018d417); Time taken: 1.032 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++----------+--------+
+|  tabla   | filas  |
++----------+--------+
+| externa  | 2001   |
+| interna  | 2001   |
++----------+--------+
+2 rows selected (1.15 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> DESCRIBE FORMATTED demo_externa;
+INFO  : Compiling command(queryId=hive_20261119182051_59dc48b8-1665-426c-b6a6-9b6ff749a1a9): DESCRIBE FORMATTED demo_externa
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:col_name, type:string, comment:from deserializer), FieldSchema(name:data_type, type:string, comment:from deserializer), FieldSchema(name:comment, type:string, comment:from deserializer)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182051_59dc48b8-1665-426c-b6a6-9b6ff749a1a9); Time taken: 0.009 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182051_59dc48b8-1665-426c-b6a6-9b6ff749a1a9): DESCRIBE FORMATTED demo_externa
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119182051_59dc48b8-1665-426c-b6a6-9b6ff749a1a9); Time taken: 0.013 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++-------------------------------+----------------------------------------------------+-----------------------+
+|           col_name            |                     data_type                      |        comment        |
++-------------------------------+----------------------------------------------------+-----------------------+
+| linea                         | string                                             |                       |
+|                               | NULL                                               | NULL                  |
+| # Detailed Table Information  | NULL                                               | NULL                  |
+| Database:                     | nexo                                               | NULL                  |
+| OwnerType:                    | USER                                               | NULL                  |
+| Owner:                        | hive                                               | NULL                  |
+| CreateTime:                   | Thu Nov 19 18:20:46 UTC 2026                       | NULL                  |
+| LastAccessTime:               | UNKNOWN                                            | NULL                  |
+| Retention:                    | 0                                                  | NULL                  |
+| Location:                     | hdfs://namenode:8020/nexo/bronze/demo_externa      | NULL                  |
+| Table Type:                   | EXTERNAL_TABLE                                     | NULL                  |
+| Table Parameters:             | NULL                                               | NULL                  |
+|                               | EXTERNAL                                           | TRUE                  |
+|                               | bucketing_version                                  | 2                     |
+|                               | numFiles                                           | 1                     |
+|                               | totalSize                                          | 335498                |
+|                               | transient_lastDdlTime                              | 1795112446            |
+|                               | NULL                                               | NULL                  |
+| # Storage Information         | NULL                                               | NULL                  |
+| SerDe Library:                | org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe | NULL                  |
+| InputFormat:                  | org.apache.hadoop.mapred.TextInputFormat           | NULL                  |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat | NULL                  |
+| Compressed:                   | No                                                 | NULL                  |
+| Num Buckets:                  | -1                                                 | NULL                  |
+| Bucket Columns:               | []                                                 | NULL                  |
+| Sort Columns:                 | []                                                 | NULL                  |
+| Storage Desc Params:          | NULL                                               | NULL                  |
+|                               | serialization.format                               | 1                     |
++-------------------------------+----------------------------------------------------+-----------------------+
+28 rows selected (0.04 seconds)
+0: jdbc:hive2://localhost:10000/> DESCRIBE FORMATTED demo_interna;
+INFO  : Compiling command(queryId=hive_20261119182051_1b043a75-1d49-4383-b8dc-a48658b506be): DESCRIBE FORMATTED demo_interna
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:col_name, type:string, comment:from deserializer), FieldSchema(name:data_type, type:string, comment:from deserializer), FieldSchema(name:comment, type:string, comment:from deserializer)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182051_1b043a75-1d49-4383-b8dc-a48658b506be); Time taken: 0.01 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182051_1b043a75-1d49-4383-b8dc-a48658b506be): DESCRIBE FORMATTED demo_interna
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119182051_1b043a75-1d49-4383-b8dc-a48658b506be); Time taken: 0.019 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+|           col_name            |                     data_type                      |                      comment                       |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+| linea                         | string                                             |                                                    |
+|                               | NULL                                               | NULL                                               |
+| # Detailed Table Information  | NULL                                               | NULL                                               |
+| Database:                     | nexo                                               | NULL                                               |
+| OwnerType:                    | USER                                               | NULL                                               |
+| Owner:                        | hive                                               | NULL                                               |
+| CreateTime:                   | Thu Nov 19 18:20:49 UTC 2026                       | NULL                                               |
+| LastAccessTime:               | UNKNOWN                                            | NULL                                               |
+| Retention:                    | 0                                                  | NULL                                               |
+| Location:                     | hdfs://namenode:8020/user/hive/warehouse/nexo.db/demo_interna | NULL                                               |
+| Table Type:                   | EXTERNAL_TABLE                                     | NULL                                               |
+| Table Parameters:             | NULL                                               | NULL                                               |
+|                               | COLUMN_STATS_ACCURATE                              | {\"BASIC_STATS\":\"true\",\"COLUMN_STATS\":{\"linea\":\"true\"}} |
+|                               | EXTERNAL                                           | TRUE                                               |
+|                               | TRANSLATED_TO_EXTERNAL                             | TRUE                                               |
+|                               | bucketing_version                                  | 2                                                  |
+|                               | external.table.purge                               | TRUE                                               |
+|                               | numFiles                                           | 1                                                  |
+|                               | numRows                                            | 2001                                               |
+|                               | rawDataSize                                        | 331496                                             |
+|                               | totalSize                                          | 333497                                             |
+|                               | transient_lastDdlTime                              | 1795112449                                         |
+|                               | NULL                                               | NULL                                               |
+| # Storage Information         | NULL                                               | NULL                                               |
+| SerDe Library:                | org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe | NULL                                               |
+| InputFormat:                  | org.apache.hadoop.mapred.TextInputFormat           | NULL                                               |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat | NULL                                               |
+| Compressed:                   | No                                                 | NULL                                               |
+| Num Buckets:                  | -1                                                 | NULL                                               |
+| Bucket Columns:               | []                                                 | NULL                                               |
+| Sort Columns:                 | []                                                 | NULL                                               |
+| Storage Desc Params:          | NULL                                               | NULL                                               |
+|                               | serialization.format                               | 1                                                  |
++-------------------------------+----------------------------------------------------+----------------------------------------------------+
+33 rows selected (0.048 seconds)
+0: jdbc:hive2://localhost:10000/> 
+0: jdbc:hive2://localhost:10000/> [WARN] Failed to create directory: /home/hive/.beeline
+No such file or directory
+Closing: 0: jdbc:hive2://localhost:10000/
+
+# ANTES del DROP: los dos directorios existen
+
+$ hdfs dfs -ls hdfs://namenode:8020/nexo/bronze/demo_externa
+Found 1 items
+-rw-r--r--   3 hive supergroup     335498 2026-11-19 18:20 hdfs://namenode:8020/nexo/bronze/demo_externa/viajes_muestra.csv
+
+$ hdfs dfs -ls hdfs://namenode:8020/user/hive/warehouse/nexo.db/demo_interna
+Found 1 items
+-rw-r--r--   3 hive supergroup     333497 2026-11-19 18:20 hdfs://namenode:8020/user/hive/warehouse/nexo.db/demo_interna/000000_0
+
+$ beeline -u jdbc:hive2://localhost:10000/ -n hive --showHeader=true --outputformat=table2 -e USE nexo; DROP TABLE demo_externa; DROP TABLE demo_interna; SHOW TABLES;
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Connecting to jdbc:hive2://localhost:10000/
+Connected to: Apache Hive (version 4.0.1)
+Driver: Hive JDBC (version 4.0.1)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+INFO  : Compiling command(queryId=hive_20261119182056_2d59eb9d-00f4-443e-8d9b-da273ee5f724): USE nexo
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182056_2d59eb9d-00f4-443e-8d9b-da273ee5f724); Time taken: 0.005 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182056_2d59eb9d-00f4-443e-8d9b-da273ee5f724): USE nexo
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119182056_2d59eb9d-00f4-443e-8d9b-da273ee5f724); Time taken: 0.003 seconds
+No rows affected (0.071 seconds)
+INFO  : Compiling command(queryId=hive_20261119182056_97e54467-84e7-47d4-a8bf-4420e4826d3d): DROP TABLE demo_externa
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182056_97e54467-84e7-47d4-a8bf-4420e4826d3d); Time taken: 0.008 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182056_97e54467-84e7-47d4-a8bf-4420e4826d3d): DROP TABLE demo_externa
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119182056_97e54467-84e7-47d4-a8bf-4420e4826d3d); Time taken: 2.173 seconds
+No rows affected (2.188 seconds)
+INFO  : Compiling command(queryId=hive_20261119182059_37659728-08a8-4988-912f-1cd4a1136dec): DROP TABLE demo_interna
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182059_37659728-08a8-4988-912f-1cd4a1136dec); Time taken: 0.053 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182059_37659728-08a8-4988-912f-1cd4a1136dec): DROP TABLE demo_interna
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119182059_37659728-08a8-4988-912f-1cd4a1136dec); Time taken: 0.441 seconds
+No rows affected (0.501 seconds)
+INFO  : Compiling command(queryId=hive_20261119182059_8257e92f-19ac-491b-9fbf-6e5b143372b9): SHOW TABLES
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:tab_name, type:string, comment:from deserializer)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20261119182059_8257e92f-19ac-491b-9fbf-6e5b143372b9); Time taken: 0.005 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20261119182059_8257e92f-19ac-491b-9fbf-6e5b143372b9): SHOW TABLES
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=hive_20261119182059_8257e92f-19ac-491b-9fbf-6e5b143372b9); Time taken: 0.079 seconds
+Unknown output format "table2". Possible values: [vertical, table, csv2, tsv2, dsv, csv, tsv, xmlattr, xmlelements, json, jsonfile]
++----------------+
+|    tab_name    |
++----------------+
+| bronze_viajes  |
+| silver_viajes  |
++----------------+
+2 rows selected (0.119 seconds)
+Beeline version 4.0.1 by Apache Hive
+[WARN] Failed to create directory: /home/hive/.beeline
+No such file or directory
+Closing: 0: jdbc:hive2://localhost:10000/
+
+# DESPUÉS del DROP
+# externa -> el CSV sigue en HDFS (Hive solo borró el esquema del metastore):
+
+$ hdfs dfs -ls hdfs://namenode:8020/nexo/bronze/demo_externa
+Found 1 items
+-rw-r--r--   3 hive supergroup     335498 2026-11-19 18:20 hdfs://namenode:8020/nexo/bronze/demo_externa/viajes_muestra.csv
+# interna -> Hive borró el directorio del warehouse junto con los datos:
+
+$ hdfs dfs -ls hdfs://namenode:8020/user/hive/warehouse/nexo.db/demo_interna
+ls: `hdfs://namenode:8020/user/hive/warehouse/nexo.db/demo_interna': No such file or directory
+>>> No existe: los datos de la tabla interna se perdieron con el DROP

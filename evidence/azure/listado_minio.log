@@ -1,0 +1,14 @@
+# Data Lake minio — 2026-11-19T17:14:30+00:00
+bucket creado: bronze
+bucket creado: silver
+bucket creado: gold
+subido viajes_muestra.csv (0.3 MB) -> s3a://bronze/viajes/2026/11/19/viajes_muestra.csv
+subido viajes.csv (167.7 MB) -> s3a://bronze/viajes/2026/11/19/viajes.csv
+
+$ listado s3a://bronze/
+  FILE viajes/2026/11/19/viajes.csv  167686329  2026-11-19 17:14:31.150000+00:00
+  FILE viajes/2026/11/19/viajes_muestra.csv  335498  2026-11-19 17:14:30.358000+00:00
+
+$ listado s3a://silver/
+
+$ listado s3a://gold/

@@ -1,0 +1,122 @@
+# WordCount NexoUrbano — 2026-11-19T18:18:21Z
+
+$ hdfs dfs -mkdir -p /nexo/bronze/ops_texto
+
+$ hdfs dfs -put -f /nexo/data/texto_ops.txt /nexo/bronze/ops_texto/
+
+$ hdfs dfs -put -f /nexo/data/menciones_social.txt /nexo/bronze/ops_texto/
+
+$ hdfs dfs -ls /nexo/bronze/ops_texto
+Found 2 items
+-rw-r--r--   1 hadoop supergroup     370182 2026-11-19 18:18 /nexo/bronze/ops_texto/menciones_social.txt
+-rw-r--r--   1 hadoop supergroup      98083 2026-11-19 18:18 /nexo/bronze/ops_texto/texto_ops.txt
+
+$ hadoop jar /opt/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.6.jar wordcount /nexo/bronze/ops_texto /nexo/gold/wordcount
+2026-11-19 18:18:32 INFO  DefaultNoHARMFailoverProxyProvider:64 - Connecting to ResourceManager at resourcemanager/172.18.0.8:8032
+2026-11-19 18:18:33 INFO  JobResourceUploader:907 - Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/hadoop/.staging/job_1795111530558_0002
+2026-11-19 18:18:33 INFO  FileInputFormat:300 - Total input files to process : 2
+2026-11-19 18:18:33 INFO  JobSubmitter:202 - number of splits:2
+2026-11-19 18:18:34 INFO  JobSubmitter:298 - Submitting tokens for job: job_1795111530558_0002
+2026-11-19 18:18:34 INFO  JobSubmitter:299 - Executing with tokens: []
+2026-11-19 18:18:34 INFO  Configuration:2854 - resource-types.xml not found
+2026-11-19 18:18:34 INFO  ResourceUtils:476 - Unable to find 'resource-types.xml'.
+2026-11-19 18:18:34 INFO  YarnClientImpl:338 - Submitted application application_1795111530558_0002
+2026-11-19 18:18:34 INFO  Job:1682 - The url to track the job: http://resourcemanager:8088/proxy/application_1795111530558_0002/
+2026-11-19 18:18:34 INFO  Job:1727 - Running job: job_1795111530558_0002
+2026-11-19 18:18:39 INFO  Job:1748 - Job job_1795111530558_0002 running in uber mode : false
+2026-11-19 18:18:39 INFO  Job:1755 -  map 0% reduce 0%
+2026-11-19 18:18:45 INFO  Job:1755 -  map 50% reduce 0%
+2026-11-19 18:18:46 INFO  Job:1755 -  map 100% reduce 0%
+2026-11-19 18:18:50 INFO  Job:1755 -  map 100% reduce 100%
+2026-11-19 18:18:51 INFO  Job:1766 - Job job_1795111530558_0002 completed successfully
+2026-11-19 18:18:51 INFO  Job:1773 - Counters: 54
+	File System Counters
+		FILE: Number of bytes read=250699
+		FILE: Number of bytes written=1331641
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=468514
+		HDFS: Number of bytes written=189388
+		HDFS: Number of read operations=11
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+		HDFS: Number of bytes read erasure-coded=0
+	Job Counters 
+		Launched map tasks=2
+		Launched reduce tasks=1
+		Rack-local map tasks=2
+		Total time spent by all maps in occupied slots (ms)=9332
+		Total time spent by all reduces in occupied slots (ms)=4560
+		Total time spent by all map tasks (ms)=4666
+		Total time spent by all reduce tasks (ms)=2280
+		Total vcore-milliseconds taken by all map tasks=4666
+		Total vcore-milliseconds taken by all reduce tasks=2280
+		Total megabyte-milliseconds taken by all map tasks=2388992
+		Total megabyte-milliseconds taken by all reduce tasks=1167360
+	Map-Reduce Framework
+		Map input records=2906
+		Map output records=64346
+		Map output bytes=725656
+		Map output materialized bytes=250705
+		Input split bytes=249
+		Combine input records=64346
+		Combine output records=15466
+		Reduce input groups=15455
+		Reduce shuffle bytes=250705
+		Reduce input records=15466
+		Reduce output records=15455
+		Spilled Records=30932
+		Shuffled Maps =2
+		Failed Shuffles=0
+		Merged Map outputs=2
+		GC time elapsed (ms)=225
+		CPU time spent (ms)=4830
+		Physical memory (bytes) snapshot=1058508800
+		Virtual memory (bytes) snapshot=6810910720
+		Total committed heap usage (bytes)=948436992
+		Peak Map Physical memory (bytes)=502521856
+		Peak Map Virtual memory (bytes)=2271490048
+		Peak Reduce Physical memory (bytes)=234246144
+		Peak Reduce Virtual memory (bytes)=2272706560
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=468265
+	File Output Format Counters 
+		Bytes Written=189388
+
+$ hdfs dfs -ls /nexo/gold/wordcount
+Found 2 items
+-rw-r--r--   1 hadoop supergroup          0 2026-11-19 18:18 /nexo/gold/wordcount/_SUCCESS
+-rw-r--r--   1 hadoop supergroup     189388 2026-11-19 18:18 /nexo/gold/wordcount/part-r-00000
+
+# part-r-00000 copiado a 04-hadoop/mapreduce/output/ (15455 términos distintos)
+
+# Top 20 términos operativos
+rank	conteo	termino
+1	664	rueda
+2	623	rider
+3	621	cobro
+4	600	candado
+5	593	gps
+6	585	app
+7	574	freno
+8	572	estacion
+9	545	bateria
+10	528	scooter
+11	332	pinchada
+12	312	pago
+13	312	payment_fail
+14	312	repetido
+15	311	doble
+16	310	mensual
+17	310	pase
+18	300	libera
+19	297	viaje
+20	296	saltando

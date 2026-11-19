@@ -1,0 +1,108 @@
+# HDFS NexoUrbano — 2026-11-19T18:15:05Z
+
+$ hdfs dfs -mkdir -p /nexo/bronze/viajes /nexo/bronze/viajes_full /nexo/bronze/logs /nexo/silver /nexo/gold
+
+$ hdfs dfs -put -f /nexo/data/viajes_muestra.csv /nexo/bronze/viajes/
+
+$ hdfs dfs -put -f /nexo/data/viajes.csv /nexo/bronze/viajes_full/
+
+$ hdfs dfs -ls -R /nexo
+drwxr-xr-x   - hadoop supergroup          0 2026-11-19 18:15 /nexo/bronze
+drwxr-xr-x   - hadoop supergroup          0 2026-11-19 18:15 /nexo/bronze/logs
+drwxr-xr-x   - hadoop supergroup          0 2026-11-19 18:15 /nexo/bronze/viajes
+-rw-r--r--   1 hadoop supergroup     335498 2026-11-19 18:15 /nexo/bronze/viajes/viajes_muestra.csv
+drwxr-xr-x   - hadoop supergroup          0 2026-11-19 18:15 /nexo/bronze/viajes_full
+-rw-r--r--   1 hadoop supergroup  167686329 2026-11-19 18:15 /nexo/bronze/viajes_full/viajes.csv
+drwxr-xr-x   - hadoop supergroup          0 2026-11-19 18:15 /nexo/gold
+drwxr-xr-x   - hadoop supergroup          0 2026-11-19 18:15 /nexo/silver
+
+$ hdfs dfs -mkdir -p /nexo/bronze/viajes/backup
+
+$ hdfs dfs -cp /nexo/bronze/viajes/viajes_muestra.csv /nexo/bronze/viajes/backup/
+
+$ hdfs dfs -mv /nexo/bronze/viajes/backup/viajes_muestra.csv /nexo/bronze/viajes/backup/viajes_muestra_20261119.csv
+
+$ hdfs dfs -ls -R /nexo/bronze/viajes
+drwxr-xr-x   - hadoop supergroup          0 2026-11-19 18:15 /nexo/bronze/viajes/backup
+-rw-r--r--   1 hadoop supergroup     335498 2026-11-19 18:15 /nexo/bronze/viajes/backup/viajes_muestra_20261119.csv
+-rw-r--r--   1 hadoop supergroup     335498 2026-11-19 18:15 /nexo/bronze/viajes/viajes_muestra.csv
+
+$ hdfs dfs -du -h /nexo
+160.6 M  160.6 M  /nexo/bronze
+0        0        /nexo/gold
+0        0        /nexo/silver
+
+$ hdfs dfs -du -s -h /nexo/bronze
+160.6 M  160.6 M  /nexo/bronze
+
+# Bloques y replicación del archivo grande (160 MB > 128 MB => 2 bloques)
+
+$ hdfs getconf -confKey dfs.blocksize
+134217728
+
+$ hdfs getconf -confKey dfs.replication
+1
+
+$ hdfs dfs -stat bloque=%o B  replicacion=%r  tamano=%b B  %n /nexo/bronze/viajes_full/viajes.csv
+bloque=134217728 B  replicacion=1  tamano=167686329 B  viajes.csv
+
+$ hdfs fsck /nexo/bronze/viajes_full/viajes.csv -files -blocks -locations
+Connecting to namenode via http://namenode:9870/fsck?ugi=hadoop&files=1&blocks=1&locations=1&path=%2Fnexo%2Fbronze%2Fviajes_full%2Fviajes.csv
+FSCK started by hadoop (auth:SIMPLE) from /172.18.0.10 for path /nexo/bronze/viajes_full/viajes.csv at Thu Nov 19 18:15:35 UTC 2026
+
+/nexo/bronze/viajes_full/viajes.csv 167686329 bytes, replicated: replication=1, 2 block(s):  OK
+0. BP-2010353224-172.18.0.6-1795111527692:blk_1073741832_1008 len=134217728 Live_repl=1  [DatanodeInfoWithStorage[172.18.0.7:9866,DS-773f581b-bbf1-4a64-bdf3-c7bbf38cc02b,DISK]]
+1. BP-2010353224-172.18.0.6-1795111527692:blk_1073741833_1009 len=33468601 Live_repl=1  [DatanodeInfoWithStorage[172.18.0.7:9866,DS-773f581b-bbf1-4a64-bdf3-c7bbf38cc02b,DISK]]
+
+
+Status: HEALTHY
+ Number of data-nodes:	1
+ Number of racks:		1
+ Total dirs:			0
+ Total symlinks:		0
+
+Replicated Blocks:
+ Total size:	167686329 B
+ Total files:	1
+ Total blocks (validated):	2 (avg. block size 83843164 B)
+ Minimally replicated blocks:	2 (100.0 %)
+ Over-replicated blocks:	0 (0.0 %)
+ Under-replicated blocks:	0 (0.0 %)
+ Mis-replicated blocks:		0 (0.0 %)
+ Default replication factor:	1
+ Average block replication:	1.0
+ Missing blocks:		0
+ Corrupt blocks:		0
+ Missing replicas:		0 (0.0 %)
+ Blocks queued for replication:	0
+
+Erasure Coded Block Groups:
+ Total size:	0 B
+ Total files:	0
+ Total block groups (validated):	0
+ Minimally erasure-coded block groups:	0
+ Over-erasure-coded block groups:	0
+ Under-erasure-coded block groups:	0
+ Unsatisfactory placement block groups:	0
+ Average block group size:	0.0
+ Missing block groups:		0
+ Corrupt block groups:		0
+ Missing internal blocks:	0
+ Blocks queued for replication:	0
+FSCK ended at Thu Nov 19 18:15:35 UTC 2026 in 2 milliseconds
+
+
+The filesystem under path '/nexo/bronze/viajes_full/viajes.csv' is HEALTHY
+
+# ---------------------------------------------------------------------------
+# Comentario del squad (8 líneas)
+# 1. Tamaño de bloque: 128 MB (dfs.blocksize=134217728, default de Hadoop 3).
+# 2. viajes.csv (1 M filas, ~160 MB) queda en 2 bloques: uno de 128 MB y otro con el resto; fsck lo muestra.
+# 3. Factor de replicación: 1, porque el sandbox tiene un solo DataNode (en producción, 3).
+# 4. El NameNode guarda solo metadatos (qué bloques forman cada archivo y dónde están); los datos están en el DataNode.
+# 5. Si muere 1 DataNode con replicación 1, los bloques que tenía quedan "missing" y el archivo no se puede leer
+#    (fsck pasa a CORRUPT) hasta que el nodo vuelva: no hay otra copia.
+# 6. Con replicación 3 y varios DataNodes, el NameNode deja de recibir heartbeats (~10 min), marca el nodo como
+#    muerto y re-replica sus bloques desde las copias sanas a otros nodos hasta volver a 3. Los clientes leen
+#    de otra réplica sin enterarse.
+# ---------------------------------------------------------------------------

@@ -1,0 +1,74 @@
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+{
+  "ciudad": "Buenos Aires",
+  "fecha_desde": "2026-03-01",
+  "fecha_hasta": "2026-05-31",
+  "viajes_path": "data/viajes.csv",
+  "catalogo": "workspace",
+  "schema_silver": "nexo_silver",
+  "tags_social": "ecobici,buenosaires,monopatin,scooter,micromovilidad,bicicleta"
+}
+shape = (1,000,000, 17)
++-------+--------+------+----------+--------+----------+-------------+-----------+------------+----------+---------+---------+-------+-------+---+--------+------------+
+|ride_id|ts_start|ts_end|duration_s|rider_id|vehicle_id|station_start|station_end|barrio_start|barrio_end|lat_start|lon_start|lat_end|lon_end|km |fare_ars|clima_codigo|
++-------+--------+------+----------+--------+----------+-------------+-----------+------------+----------+---------+---------+-------+-------+---+--------+------------+
+|0      |0       |0     |0         |0       |0         |0            |0          |0           |0         |0        |0        |0      |0      |0  |0       |0           |
++-------+--------+------+----------+--------+----------+-------------+-----------+------------+----------+---------+---------+-------+-------+---+--------+------------+
+
+1) viajes válidos: 979,827 de 1,000,000 (97.98 %)
+2) viajes/hora promedio: 448.6
+3) duración p50 = 4.1 min · p95 = 12.8 min
+4) top 5 estaciones origen:
++-------------+------------+-----+
+|station_start|barrio_start|count|
++-------------+------------+-----+
+|ST000        |Palermo     |41172|
+|ST019        |Nunez       |41131|
+|ST002        |San Telmo   |41092|
+|ST013        |Recoleta    |41088|
+|ST023        |Chacarita   |41043|
++-------------+------------+-----+
+only showing top 5 rows
+5) facturación total estimada: ARS 345,437,062
+ST000 (-34.5855,-58.3816): 2208 horas
+ST019 (-34.5928,-58.3585): 2208 horas
+ST002 (-34.5958,-58.4215): 2208 horas
++----------+-----+--------------+--------+
+|station_id|horas|horas_adversas|mm_total|
++----------+-----+--------------+--------+
+|     ST000| 2208|           288|   287.9|
+|     ST019| 2208|           288|   287.9|
+|     ST002| 2208|           288|   287.9|
++----------+-----+--------------+--------+
+
+26/11/19 17:13:43 WARN MemoryManager: Total allocation exceeds 95.00% (2,040,109,440 bytes) of heap memory
+Scaling row group sizes to 95.00% for 16 writers
+OK silver_clima_horario: 6,624 filas -> /nexo/lake/silver/silver_clima_horario
+mastodon #ecobici: 11 posts
+mastodon #buenosaires: 160 posts
+mastodon #monopatin: 1 posts
+mastodon #scooter: 160 posts
+mastodon #micromovilidad: 15 posts
+mastodon #bicicleta: 160 posts
++--------+--------------+-----+----------+
+|fuente  |consulta      |posts|incidentes|
++--------+--------------+-----+----------+
+|mastodon|bicicleta     |159  |8         |
+|mastodon|monopatin     |1    |0         |
+|mastodon|ecobici       |11   |0         |
+|mastodon|micromovilidad|15   |6         |
+|mastodon|scooter       |160  |4         |
+|mastodon|buenosaires   |160  |9         |
++--------+--------------+-----+----------+
+
+OK silver_social: 506 filas -> /nexo/lake/silver/silver_social
+data/menciones_social.txt: 506 líneas
+OK silver_clima_viajes: 6,482 filas -> /nexo/lake/silver/silver_clima_viajes
++-------+-----+---------------+------------------+
+|adverso|horas|viajes_por_hora|duracion_media_min|
++-------+-----+---------------+------------------+
+|  false| 5618|          19.02|              5.19|
+|   true|  864|          19.13|               5.2|
++-------+-----+---------------+------------------+
+

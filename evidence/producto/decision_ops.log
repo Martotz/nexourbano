@@ -1,0 +1,98 @@
+# Decisión operativa NexoUrbano — 2026-11-19 18:52 UTC
+
+Generado por `09-producto/decision_ops.py` cruzando Spark (Gold), Cassandra, MongoDB, Neo4j, MapReduce (WordCount) y Open-Meteo.
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+
+## P1 · ¿Dónde reponer scooters en las próximas 3 h si llueve?  (Spark Gold + Open-Meteo)
+
+Pronóstico Open-Meteo (centro de CABA):
+| hora_utc | prob_lluvia_% | mm | wmo |
+|---|---|---|---|
+| 19:00 | 2 | 0.0 | 0 |
+| 20:00 | 2 | 0.0 | 1 |
+| 21:00 | 2 | 0.0 | 0 |
+
+¿Se espera lluvia en las próximas 3 h? **NO**. Se calcula igual el escenario con lluvia, que es lo que pregunta el board.
+26/11/19 18:52:57 WARN SparkStringUtils: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
+
+Horas UTC evaluadas: [19, 20, 21]. Top 5 estaciones por presión = viajes esperados en 3 h con lluvia / capacidad:
+| station_start | barrio | capacidad | viajes_esperados_3h | presion |
+|---|---|---|---|---|
+| ST019 | Nunez | 8 | 60.1 | 7.51 |
+| ST008 | Colegiales | 8 | 58.7 | 7.34 |
+| ST022 | Microcentro | 8 | 55.1 | 6.89 |
+| ST016 | Caballito | 9 | 55.0 | 6.11 |
+| ST003 | Belgrano | 10 | 55.8 | 5.58 |
+
+**Decisión:** reponer primero en ST019 (Nunez), ST008 (Colegiales), ST022 (Microcentro). Con lluvia la demanda histórica es 1.00× la de tiempo seco en esas horas (≈ 1: los datos sintéticos no traen efecto lluvia, así que la priorización sale de demanda base vs. capacidad; con datos reales de EcoBici este cociente es el que mueve la decisión).
+
+## P2 · ¿Qué vehículo hay que retirar hoy?  (Cassandra + SOH de la flota)
+
+Última lectura de 80 vehículos (PER PARTITION LIMIT 1). Reglas: SOH < 70 %, batería < 15 %, temp > 35 °C, o ya en mantenimiento. 19 vehículos cumplen al menos una:
+| vehicle_id | modelo | ultima_lectura | soh_% | bateria_% | temp_c | motivos | prioridad |
+|---|---|---|---|---|---|---|---|
+| V0012 | Nexo S1 | 2026-05-01T19:59 | 62.1 | 38.9 | 33.4 | SOH 62.1% < 70% | 7.9 |
+| V0051 | Nexo Bike A | 2026-05-01T19:20 | 62.1 | 59.6 | 22.8 | SOH 62.1% < 70% | 7.9 |
+| V0049 | Nexo S2 | 2026-05-01T19:54 | 63.2 | 55.3 | 21.1 | SOH 63.2% < 70% | 6.8 |
+| V0048 | Nexo S2 | 2026-05-01T19:57 | 69.3 | 67.8 | 21.1 | SOH 69.3% < 70%; ya marcado en mantenimiento | 5.7 |
+| V0078 | Nexo S2 | 2026-05-01T19:56 | 69.6 | 84.2 | 22.3 | SOH 69.6% < 70%; ya marcado en mantenimiento | 5.4 |
+| V0005 | Nexo S1 | 2026-05-01T19:48 | 87.4 | 78.8 | 29.3 | ya marcado en mantenimiento | 5 |
+| V0058 | Nexo S1 | 2026-05-01T19:22 | 83.3 | 58.5 | 15.7 | ya marcado en mantenimiento | 5 |
+| V0045 | Nexo Bike A | 2026-05-01T19:58 | 85.8 | 78.6 | 33.5 | ya marcado en mantenimiento | 5 |
+| V0011 | Nexo Bike A | 2026-05-01T19:57 | 82.0 | 58.1 | 26.1 | ya marcado en mantenimiento | 5 |
+| V0013 | Nexo S2 | 2026-05-01T19:55 | 66.0 | 63.0 | 15.9 | SOH 66.0% < 70% | 4.0 |
+
+**Decisión:** retirar hoy V0012, V0051, V0049 (mayor prioridad).
+
+## P3 · ¿Qué pase venderle a un rider?  (MongoDB + Neo4j)
+
+Catálogo de pases activos ordenado por ventas (Mongo $lookup): SKU006, SKU004, SKU001, SKU009, SKU003, SKU010, SKU005, SKU002, SKU008
+
+Top 5 riders por viajes (Neo4j SALE_DE) → pase que todavía no compraron con más afinidad (3 pts por tag que coincide con sus intereses, 2 si lo compró un amigo, + popularidad):
+| rider | plan | viajes | intereses | pase_sugerido | tags_pase | precio_ars | lo_compró_un_amigo |
+|---|---|---|---|---|---|---|---|
+| R0001 | plus | 1162 | clima, gastronomia | SKU009 Pase 9 | pro, lluvia | 5990 | True |
+| R0078 | pro | 1151 | tecnologia, fotografia | SKU001 Pase 1 | urbano, lluvia | 6709 | True |
+| R0023 | free | 1151 | clima, running | SKU004 Pase 4 | estudiante, pro | 5990 | True |
+| R0056 | plus | 1150 | futbol, ciclovia | SKU005 Pase 5 | noche, urbano | 3490 | True |
+| R0030 | free | 1148 | ciclovia, futbol | SKU006 Pase 6 | noche, estudiante | 5990 | True |
+
+## P4 · ¿Hay collusion / fraude social?  (Neo4j)
+
+Triángulos de 3 riders que arrancan en la misma estación con < 2 min, por encima de lo esperable (z ≥ 2.5 en los 3 pares): **0**
+_(sin filas)_
+
+Pares con más co-inicios por encima de lo esperado:
+| rider_a | rider_b | co_inicios_2min | esperado | z | son_amigos |
+|---|---|---|---|---|---|
+| R0047 | R0070 | 104 | 64.6 | 4.9 | False |
+| R0063 | R0074 | 94 | 62.8 | 3.94 | False |
+| R0041 | R0085 | 96 | 65.3 | 3.8 | False |
+| R0059 | R0115 | 93 | 63.1 | 3.76 | False |
+| R0062 | R0073 | 90 | 61.2 | 3.68 | False |
+
+Triángulos de viajes compartidos declarados (VIAJO_CON): **2**
+| a | b | c | viajes_compartidos |
+|---|---|---|---|
+| R0021 | R0093 | R0104 | 13 |
+| R0092 | R0104 | R0113 | 18 |
+
+**Decisión:** no hay evidencia de collusion de 3 riders en los inicios de viaje; revisar a mano R0047–R0070 (z = 4.9) y los triángulos VIAJO_CON. Con 7 140 pares evaluados, varios z ≥ 2.5 son esperables por azar: es una lista para revisar, no una acusación.
+
+## P5 · ¿Cuánto se facturó vs. tickets de soporte "cobro"?  (Spark Gold + WordCount MapReduce)
+
+Facturación por mes (gold_ops_diaria, Spark). La misma cuenta en Hive está en evidence/hadoop/hive_nexo.log (difiere en unos pocos viajes porque Hive no aplica la regla km = 0 con > 10 min).
+| mes | viajes | viajes_ars | ventas_ars | total_ars |
+|---|---|---|---|---|
+| 2026-03 | 337479 | 119,042,533 | 3,140,510 | 122,183,043 |
+| 2026-04 | 326291 | 115,089,522 | 2,928,420 | 118,017,942 |
+| 2026-05 | 316048 | 111,301,802 | 2,972,070 | 114,273,872 |
+
+WordCount sobre 2,400 tickets etiquetados: **#cobro = 310** (12.9 %), #pago = 312 (13.0 %).
+
+Relación: **0.87 tickets de cobro por cada millón de ARS facturado** (ARS 354,474,857 en el período).
+
+> **Dato faltante:** los tickets de `texto_ops.txt` no tienen fecha, así que no se puede ver si los reclamos por cobro suben en los meses de más facturación. Para eso, el sistema de tickets debería exportar la fecha.
+
+OK -> /nexo/09-producto/decision_ops.md

@@ -1,0 +1,17 @@
+amigos=220 viajo_con=160 le_gusta=229
+/nexo/08-neo4j/prep_grafo.py:75: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  v["t"] = (pd.to_datetime(v["ts_start"], utc=True) - pd.Timestamp("1970-01-01", tz="UTC")) // pd.Timedelta(seconds=1)
+sale_de (top 3 por rider): 360 relaciones
+co-inicios < 120s: 458,912 coincidencias · 7,140 pares con al menos una · esperado medio 64.3 por par · máximo observado 104
+inicio_sincronizado (z >= 2.5): 79 pares
+    a     b  veces  esperado    z
+R0047 R0070    104      64.6 4.90
+R0063 R0074     94      62.8 3.94
+R0041 R0085     96      65.3 3.80
+R0059 R0115     93      63.1 3.76
+R0062 R0073     90      61.2 3.68
+R0036 R0046     94      64.5 3.67
+R0000 R0046     91      63.0 3.53
+R0015 R0088     93      64.8 3.50
+R0090 R0117     93      65.1 3.46
+R0058 R0103     92      64.5 3.42

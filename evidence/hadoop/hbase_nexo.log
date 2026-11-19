@@ -1,0 +1,458 @@
+# HBase NexoUrbano — 2026-11-19T18:18:56Z
+HBase 2.1.3
+2026-11-19 18:19:02,201 WARN  [main] util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Took 0.3702 secondsTook 0.0050 secondsTook 0.2999 seconds
+Created table nexo:vehiculos
+Took 1.3104 seconds
+Table nexo:vehiculos is ENABLED
+nexo:vehiculos
+COLUMN FAMILIES DESCRIPTION
+{NAME => 'id', VERSIONS => '1', EVICT_BLOCKS_ON_CLOSE => 'false', NEW_VERSION_BEHAVIOR => 'false', KEEP_DELETED_CELLS => 'FALSE', CACHE_DATA_ON_WRITE => 'false', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', MIN_VERSIONS => '0', REPLICATION_SCOPE => '0', BLOOMFILTER => 'ROW', CACHE_INDEX_ON_WRITE => 'false', IN_MEMORY => 'false', CACHE_BLOOMS_ON_WRITE => 'false', PREFETCH_BLOCKS_ON_OPEN => 'false', COMPRESSION => 'NONE', BLOCKCACHE => 'true', BLOCKSIZE => '65536'}
+{NAME => 'telemetry', VERSIONS => '5', EVICT_BLOCKS_ON_CLOSE => 'false', NEW_VERSION_BEHAVIOR => 'false', KEEP_DELETED_CELLS => 'FALSE', CACHE_DATA_ON_WRITE => 'false', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', MIN_VERSIONS => '0', REPLICATION_SCOPE => '0', BLOOMFILTER => 'ROW', CACHE_INDEX_ON_WRITE => 'false', IN_MEMORY => 'false', CACHE_BLOOMS_ON_WRITE => 'false', PREFETCH_BLOCKS_ON_OPEN => 'false', COMPRESSION => 'NONE', BLOCKCACHE => 'true', BLOCKSIZE => '65536'}
+2 row(s)
+Took 0.0721 seconds
+Took 0.0825 seconds
+Took 0.0043 seconds
+Took 0.0056 seconds
+Took 0.0046 seconds
+Took 0.0044 seconds
+Took 0.0148 seconds
+Took 0.0046 seconds
+Took 0.0060 seconds
+Took 0.0043 seconds
+Took 0.0042 seconds
+Took 0.0106 seconds
+Took 0.0038 seconds
+Took 0.0216 seconds
+Took 0.0043 seconds
+Took 0.0039 seconds
+Took 0.0116 seconds
+Took 0.0038 seconds
+Took 0.0043 seconds
+Took 0.0033 seconds
+Took 0.0035 seconds
+Took 0.0036 seconds
+Took 0.0036 seconds
+Took 0.0038 seconds
+Took 0.0040 seconds
+Took 0.0040 seconds
+Took 0.0037 seconds
+Took 0.0041 seconds
+Took 0.0036 seconds
+Took 0.0031 seconds
+Took 0.0035 seconds
+Took 0.0034 seconds
+Took 0.0038 seconds
+Took 0.0036 seconds
+Took 0.0034 seconds
+Took 0.0032 seconds
+Took 0.0033 seconds
+Took 0.0037 seconds
+Took 0.0035 seconds
+Took 0.0032 seconds
+Took 0.0035 seconds
+Took 0.0033 seconds
+Took 0.0032 seconds
+Took 0.0041 seconds
+Took 0.0032 seconds
+Took 0.0038 seconds
+Took 0.0042 seconds
+Took 0.0043 seconds
+Took 0.0033 seconds
+Took 0.0042 seconds
+Took 0.0056 seconds
+Took 0.0048 seconds
+Took 0.0049 seconds
+Took 0.0048 seconds
+Took 0.0044 seconds
+Took 0.0048 seconds
+Took 0.0038 seconds
+Took 0.0062 seconds
+Took 0.0047 seconds
+Took 0.0033 seconds
+Took 0.0033 seconds
+Took 0.0035 seconds
+Took 0.0031 seconds
+Took 0.0031 seconds
+Took 0.0041 seconds
+Took 0.0036 seconds
+Took 0.0034 seconds
+Took 0.0032 seconds
+Took 0.0033 seconds
+Took 0.0035 seconds
+Took 0.0033 seconds
+Took 0.0036 seconds
+Took 0.0037 seconds
+Took 0.0032 seconds
+Took 0.0030 seconds
+Took 0.0037 seconds
+Took 0.0034 seconds
+Took 0.0034 seconds
+Took 0.0035 seconds
+Took 0.0033 seconds
+Took 0.0033 seconds
+Took 0.0035 seconds
+Took 0.0033 seconds
+Took 0.0029 seconds
+Took 0.0033 seconds
+Took 0.0032 seconds
+Took 0.0035 seconds
+Took 0.0028 seconds
+Took 0.0034 seconds
+Took 0.0033 seconds
+Took 0.0037 seconds
+Took 0.0032 seconds
+Took 0.0033 seconds
+Took 0.0033 seconds
+Took 0.0031 seconds
+Took 0.0036 seconds
+Took 0.0036 seconds
+Took 0.0035 seconds
+Took 0.0038 seconds
+Took 0.0030 seconds
+Took 0.0033 seconds
+Took 0.0035 seconds
+Took 0.0032 seconds
+Took 0.0029 seconds
+Took 0.0031 seconds
+Took 0.0030 seconds
+Took 0.0034 seconds
+Took 0.0029 seconds
+Took 0.0033 seconds
+Took 0.0032 seconds
+Took 0.0042 seconds
+Took 0.0029 seconds
+Took 0.0035 seconds
+Took 0.0030 seconds
+Took 0.0027 seconds
+Took 0.0033 seconds
+Took 0.0033 seconds
+Took 0.0031 seconds
+Took 0.0029 seconds
+Took 0.0028 seconds
+Took 0.0032 seconds
+Took 0.0031 seconds
+Took 0.0032 seconds
+Took 0.0033 seconds
+Took 0.0029 seconds
+Took 0.0031 seconds
+Took 0.0030 seconds
+Took 0.0033 seconds
+Took 0.0039 seconds
+Took 0.0030 seconds
+Took 0.0030 seconds
+Took 0.0027 seconds
+Took 0.0028 seconds
+Took 0.0029 seconds
+Took 0.0030 seconds
+Took 0.0029 seconds
+Took 0.0030 seconds
+Took 0.0026 seconds
+Took 0.0029 seconds
+Took 0.0029 seconds
+Took 0.0027 seconds
+Took 0.0031 seconds
+Took 0.0033 seconds
+Took 0.0027 seconds
+Took 0.0029 seconds
+Took 0.0035 seconds
+Took 0.0031 seconds
+Took 0.0030 seconds
+Took 0.0031 seconds
+Took 0.0027 seconds
+Took 0.0030 seconds
+Took 0.0031 seconds
+Took 0.0027 seconds
+Took 0.0029 seconds
+Took 0.0036 seconds
+Took 0.0032 seconds
+Took 0.0029 seconds
+Took 0.0032 seconds
+Took 0.0037 seconds
+Took 0.0029 seconds
+Took 0.0027 seconds
+Took 0.0029 seconds
+Took 0.0032 seconds
+Took 0.0026 seconds
+Took 0.0031 seconds
+Took 0.0026 seconds
+Took 0.0030 seconds
+Took 0.0030 seconds
+Took 0.0028 seconds
+Took 0.0026 seconds
+Took 0.0032 seconds
+Took 0.0026 seconds
+Took 0.0028 seconds
+Took 0.0030 seconds
+Took 0.0029 seconds
+Took 0.0026 seconds
+Took 0.0029 seconds
+Took 0.0030 seconds
+Took 0.0031 seconds
+Took 0.0027 seconds
+Took 0.0029 seconds
+Took 0.0029 seconds
+Took 0.0032 seconds
+Took 0.0030 seconds
+Took 0.0032 seconds
+Took 0.0034 seconds
+Took 0.0028 seconds
+Took 0.0027 seconds
+Took 0.0030 seconds
+Took 0.0027 seconds
+Took 0.0029 seconds
+Took 0.0028 seconds
+Took 0.0028 seconds
+Took 0.0028 seconds
+Took 0.0031 seconds
+Took 0.0028 seconds
+Took 0.0030 seconds
+Took 0.0033 seconds
+Took 0.0029 seconds
+Took 0.0027 seconds
+Took 0.0033 seconds
+Took 0.0030 seconds
+Took 0.0028 seconds
+Took 0.0031 seconds
+Took 0.0027 seconds
+Took 0.0033 seconds
+Took 0.0037 seconds
+Took 0.0046 seconds
+Took 0.0033 seconds
+Took 0.0032 seconds
+Took 0.0028 seconds
+Took 0.0032 seconds
+Took 0.0031 seconds
+Took 0.0033 seconds
+Took 0.0033 seconds
+Took 0.0031 seconds
+Took 0.0025 seconds
+Took 0.0032 seconds
+Took 0.0033 seconds
+Took 0.0033 seconds
+Took 0.0039 seconds
+Took 0.0031 seconds
+Took 0.0032 seconds
+Took 0.0031 seconds
+Took 0.0031 seconds
+Took 0.0031 seconds
+Took 0.0039 seconds
+Took 0.0032 seconds
+Took 0.0038 seconds
+Took 0.0036 seconds
+Took 0.0034 seconds
+Took 0.0032 seconds
+Took 0.0027 seconds
+Took 0.0032 seconds
+Took 0.0030 seconds
+Took 0.0027 seconds
+Took 0.0032 seconds
+Took 0.0035 seconds
+Took 0.0045 seconds
+Took 0.0030 seconds
+Took 0.0027 seconds
+Took 0.0029 seconds
+Took 0.0025 seconds
+Took 0.0028 seconds
+Took 0.0033 seconds
+Took 0.0026 seconds
+Took 0.0034 seconds
+Took 0.0034 seconds
+Took 0.0027 seconds
+Took 0.0023 seconds
+Took 0.0028 seconds
+Took 0.0028 seconds
+Took 0.0031 seconds
+Took 0.0029 seconds
+Took 0.0033 seconds
+Took 0.0032 seconds
+Took 0.0034 seconds
+Took 0.0030 seconds
+Took 0.0023 seconds
+Took 0.0027 seconds
+Took 0.0024 seconds
+Took 0.0025 seconds
+Took 0.0025 seconds
+Took 0.0024 seconds
+Took 0.0026 seconds
+Took 0.0023 seconds
+Took 0.0025 seconds
+Took 0.0024 seconds
+Took 0.0026 seconds
+Took 0.0025 seconds
+Took 0.0025 seconds
+Took 0.0028 seconds
+Took 0.0024 seconds
+Took 0.0026 seconds
+Took 0.0023 seconds
+Took 0.0027 seconds
+Took 0.0023 seconds
+Took 0.0025 seconds
+Took 0.0025 seconds
+Took 0.0025 seconds
+Took 0.0028 seconds
+Took 0.0023 seconds
+Took 0.0032 seconds
+Took 0.0034 seconds
+Took 0.0035 seconds
+Took 0.0031 seconds
+Took 0.0027 seconds
+Took 0.0023 seconds
+Took 0.0027 seconds
+Took 0.0026 seconds
+Took 0.0022 seconds
+Took 0.0026 seconds
+Took 0.0024 seconds
+Took 0.0028 seconds
+Took 0.0023 seconds
+Took 0.0025 seconds
+Took 0.0024 seconds
+Took 0.0027 seconds
+Took 0.0031 seconds
+Took 0.0028 seconds
+Took 0.0026 seconds
+Took 0.0028 seconds
+Took 0.0031 seconds
+Took 0.0030 seconds
+Took 0.0027 seconds
+Took 0.0031 seconds
+Took 0.0027 seconds
+Took 0.0027 seconds
+Took 0.0028 seconds
+Took 0.0030 seconds
+Took 0.0043 seconds
+Took 0.0034 seconds
+Took 0.0036 seconds
+Took 0.0036 seconds
+Took 0.0039 seconds
+Took 0.0036 seconds
+Took 0.0035 seconds
+Took 0.0036 seconds
+Took 0.0041 seconds
+Took 0.0036 seconds
+Took 0.0034 seconds
+Took 0.0031 seconds
+Took 0.0034 seconds
+Took 0.0037 seconds
+Took 0.0035 seconds
+Took 0.0031 seconds
+Took 0.0032 seconds
+Took 0.0037 seconds
+Took 0.0038 seconds
+Took 0.0038 seconds
+Took 0.0034 seconds
+Took 0.0032 seconds
+Took 0.0035 seconds
+Took 0.0032 seconds
+Took 0.0038 seconds
+Took 0.0042 seconds
+Took 0.0031 seconds
+Took 0.0033 seconds
+Took 0.0031 seconds
+Took 0.0030 seconds
+Took 0.0030 seconds
+Took 0.0034 seconds
+Took 0.0031 seconds
+Took 0.0029 seconds
+Took 0.0032 seconds
+Took 0.0035 seconds
+Took 0.0026 seconds
+Took 0.0031 seconds
+Took 0.0039 seconds
+Took 0.0030 seconds
+Took 0.0029 seconds
+Took 0.0031 seconds
+Took 0.0048 seconds
+Took 0.0038 seconds
+Took 0.0029 seconds
+Took 0.0031 seconds
+Took 0.0039 seconds
+Took 0.0036 seconds
+Took 0.0043 seconds
+Took 0.0030 seconds
+Took 0.0031 seconds
+Took 0.0030 seconds
+Took 0.0032 seconds
+Took 0.0030 seconds
+Took 0.0028 seconds
+Took 0.0034 seconds
+Took 0.0030 seconds
+Took 0.0034 seconds
+Took 0.0024 seconds
+Took 0.0023 seconds
+Took 0.0027 seconds
+Took 0.0021 seconds
+Took 0.0024 seconds
+Took 0.0030 seconds
+Took 0.0032 seconds
+Took 0.0029 seconds
+Took 0.0024 seconds
+Took 0.0029 seconds
+Took 0.0029 seconds
+Took 0.0024 seconds
+Took 0.0029 seconds
+Took 0.0024 seconds
+Took 0.0022 seconds
+Took 0.0028 seconds
+Took 0.0024 seconds
+Took 0.0029 seconds
+Took 0.0024 seconds
+Took 0.0024 seconds
+Took 0.0020 seconds
+Took 0.0022 seconds
+Took 0.0019 seconds
+Took 0.0024 seconds
+Took 0.0020 seconds
+Took 0.0023 seconds
+Took 0.0020 seconds
+Took 0.0022 seconds
+Took 0.0018 seconds
+Took 0.0024 seconds
+Took 0.0018 seconds
+Took 0.0022 seconds
+Took 0.0022 seconds
+80 row(s)
+Took 0.0718 seconds
+COLUMN  CELL
+ id:modelo timestamp=1795112345266, value=Nexo Bike A
+ id:vehicle_id timestamp=1795112345259, value=V0011
+ telemetry:estado timestamp=1795112345281, value=mantenimiento
+ telemetry:soh_bateria timestamp=1795112345272, value=82.0
+ telemetry:ultimo_gps timestamp=1795112345277, value=-34.597435,-58.359643
+1 row(s)
+Took 0.0233 seconds
+ROW  COLUMN+CELL
+ 0|V0048 column=id:modelo, timestamp=1795112346018, value=Nexo S2
+ 0|V0048 column=id:vehicle_id, timestamp=1795112346014, value=V0048
+ 0|V0048 column=telemetry:estado, timestamp=1795112346029, value=mantenimiento
+ 0|V0048 column=telemetry:soh_bateria, timestamp=1795112346021, value=69.3
+ 1|V0005 column=id:modelo, timestamp=1795112345057, value=Nexo S1
+ 1|V0005 column=id:vehicle_id, timestamp=1795112345052, value=V0005
+ 1|V0005 column=telemetry:estado, timestamp=1795112345072, value=mantenimiento
+ 1|V0005 column=telemetry:soh_bateria, timestamp=1795112345062, value=87.4
+ 1|V0045 column=id:modelo, timestamp=1795112345958, value=Nexo Bike A
+ 1|V0045 column=id:vehicle_id, timestamp=1795112345953, value=V0045
+ 1|V0045 column=telemetry:estado, timestamp=1795112345970, value=mantenimiento
+ 1|V0045 column=telemetry:soh_bateria, timestamp=1795112345961, value=85.8
+ 2|V0058 column=id:modelo, timestamp=1795112346189, value=Nexo S1
+ 2|V0058 column=id:vehicle_id, timestamp=1795112346186, value=V0058
+ 2|V0058 column=telemetry:estado, timestamp=1795112346199, value=mantenimiento
+ 2|V0058 column=telemetry:soh_bateria, timestamp=1795112346192, value=83.3
+ 2|V0078 column=id:modelo, timestamp=1795112346579, value=Nexo S2
+ 2|V0078 column=id:vehicle_id, timestamp=1795112346576, value=V0078
+ 2|V0078 column=telemetry:estado, timestamp=1795112346587, value=mantenimiento
+ 2|V0078 column=telemetry:soh_bateria, timestamp=1795112346582, value=69.6
+ 3|V0011 column=id:modelo, timestamp=1795112345266, value=Nexo Bike A
+ 3|V0011 column=id:vehicle_id, timestamp=1795112345259, value=V0011
+ 3|V0011 column=telemetry:estado, timestamp=1795112345281, value=mantenimiento
+ 3|V0011 column=telemetry:soh_bateria, timestamp=1795112345272, value=82.0
+6 row(s)
+Took 0.0699 seconds
+ROW  COLUMN+CELL
+ 2|V0002 column=id:vehicle_id, timestamp=1795112344949, value=V0002
+ 2|V0006 column=id:vehicle_id, timestamp=1795112345077, value=V0006
+ 2|V0010 column=id:vehicle_id, timestamp=1795112345180, value=V0010
+ 2|V0014 column=id:vehicle_id, timestamp=1795112345330, value=V0014
+ 2|V0018 column=id:vehicle_id, timestamp=1795112345416, value=V0018
+5 row(s)
+Took 0.0116 seconds
