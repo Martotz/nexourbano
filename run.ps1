@@ -10,9 +10,10 @@
   .\run.ps1 s4         # M10–M14: Mongo, Cassandra, Neo4j y producto
   .\run.ps1 all        # todo en orden
   .\run.ps1 s2.hive    # un solo paso (ver la lista con .\run.ps1 help)
+  .\run.ps1 s2.pig s2.flume   # varios pasos seguidos
   .\run.ps1 status | down
 #>
-param([Parameter(Position = 0)][string]$Paso = "help")
+param([Parameter(Position = 0, ValueFromRemainingArguments = $true)][string[]]$Objetivos = @("help"))
 
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
@@ -171,14 +172,16 @@ function Correr([string]$prefijo) {
 }
 
 $inicio = Get-Date
-switch ($Paso) {
-    "help" { Get-Help $PSCommandPath -Examples; "Pasos:"; $PASOS.Keys | ForEach-Object { "  $_" } }
-    "status" { DC ps }
-    "down" { DC down }
-    "all" { Setup; Correr "s1"; Correr "s2"; Correr "s3"; Correr "s4" }
-    { $_ -in "s1", "s2", "s3", "s4" } { Correr $Paso }
-    default {
-        if ($PASOS.Contains($Paso)) { & $PASOS[$Paso] } else { throw "Paso desconocido: $Paso (ver .\run.ps1 help)" }
+foreach ($Paso in $Objetivos) {
+    switch ($Paso) {
+        "help" { Get-Help $PSCommandPath -Examples; "Pasos:"; $PASOS.Keys | ForEach-Object { "  $_" } }
+        "status" { DC ps }
+        "down" { DC down }
+        "all" { Setup; Correr "s1"; Correr "s2"; Correr "s3"; Correr "s4" }
+        { $_ -in "s1", "s2", "s3", "s4" } { Correr $Paso }
+        default {
+            if ($PASOS.Contains($Paso)) { & $PASOS[$Paso] } else { throw "Paso desconocido: $Paso (ver .\run.ps1 help)" }
+        }
     }
 }
-Write-Host ("`nOK '{0}' en {1:mm\:ss}" -f $Paso, ((Get-Date) - $inicio)) -ForegroundColor Green
+Write-Host ("`nOK '{0}' en {1:mm\:ss}" -f ($Objetivos -join ' '), ((Get-Date) - $inicio)) -ForegroundColor Green

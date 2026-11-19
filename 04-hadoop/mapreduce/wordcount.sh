@@ -33,7 +33,7 @@ awk -v stop="$STOP" '{
     w=tolower($1); gsub(/^[#@]/,"",w); gsub(/[^a-z0-9_áéíóúñ]/,"",w);
     if (w=="" || length(w)<3 || w ~ /^(v|st|r)[0-9]+$/ || w ~ /^[0-9]+$/ || index(stop," " w " ")) next;
     c[w]+=$2
-  } END { for (w in c) print c[w] "\t" w }' "$OUT_LOCAL/part-r-00000" | sort -k1,1nr | head -20 \
+  } END { for (w in c) print c[w] "\t" w }' "$OUT_LOCAL/part-r-00000" | sort -k1,1nr | awk 'NR <= 20' \
   | awk 'BEGIN{print "rank\tconteo\ttermino"} {print NR "\t" $1 "\t" $2}' > /nexo/04-hadoop/mapreduce/top20_terminos.tsv
 echo; echo "# Top 20 términos operativos"
 cat /nexo/04-hadoop/mapreduce/top20_terminos.tsv
