@@ -18,4 +18,4 @@ if ! run pig -x mapreduce -param INPUT=/nexo/bronze/viajes_full -param OUTPUT=/n
 fi
 run hdfs dfs -ls /nexo/silver/clean_viajes
 echo; echo "# Primeras filas de la salida"
-hdfs dfs -cat /nexo/silver/clean_viajes/part-* 2>/dev/null | head -5
+hdfs dfs -cat /nexo/silver/clean_viajes/part-* 2>/dev/null | awk "NR <= 5"

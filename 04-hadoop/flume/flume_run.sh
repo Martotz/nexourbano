@@ -33,7 +33,7 @@ sleep 30
 kill $AGENT 2>/dev/null; wait $AGENT 2>/dev/null
 
 echo; echo "# Log del agente (extracto)"
-grep -E "Creating hdfs|Renaming|Closing|Exception|ERROR" /tmp/flume/agent.log | head -20
+grep -E "Creating hdfs|Renaming|Closing|Exception|ERROR" /tmp/flume/agent.log | awk "NR <= 20"
 
 run hdfs dfs -ls -R /nexo/bronze/logs
 echo; echo "# Líneas que llegaron a HDFS (deben ser 200):"
