@@ -4,16 +4,16 @@
     "nombre": "Pase 1",
     "categoria": "pase",
     "tags": [
-      "noche",
+      "urbano",
       "lluvia"
     ],
     "precios": {
       "Buenos Aires": 5990,
-      "Cordoba": 1890
+      "Cordoba": 5790
     },
     "stock": {
-      "Buenos Aires": 35,
-      "Cordoba": 53
+      "Buenos Aires": 205,
+      "Cordoba": 46
     },
     "activo": true
   },
@@ -22,16 +22,16 @@
     "nombre": "Pase 2",
     "categoria": "pase",
     "tags": [
-      "pro",
-      "estudiante"
+      "noche",
+      "urbano"
     ],
     "precios": {
-      "Buenos Aires": 14990,
-      "Cordoba": 5790
+      "Buenos Aires": 1990,
+      "Cordoba": 3290
     },
     "stock": {
-      "Buenos Aires": 88,
-      "Cordoba": 32
+      "Buenos Aires": 260,
+      "Cordoba": 22
     },
     "activo": true
   },
@@ -44,12 +44,12 @@
       "urbano"
     ],
     "precios": {
-      "Buenos Aires": 5990,
+      "Buenos Aires": 14990,
       "Cordoba": 3290
     },
     "stock": {
-      "Buenos Aires": 305,
-      "Cordoba": 87
+      "Buenos Aires": 399,
+      "Cordoba": 70
     },
     "activo": true
   },
@@ -58,16 +58,16 @@
     "nombre": "Pase 4",
     "categoria": "pase",
     "tags": [
-      "pro",
-      "estudiante"
+      "estudiante",
+      "pro"
     ],
     "precios": {
-      "Buenos Aires": 14990,
-      "Cordoba": 3290
+      "Buenos Aires": 5990,
+      "Cordoba": 5790
     },
     "stock": {
-      "Buenos Aires": 167,
-      "Cordoba": 33
+      "Buenos Aires": 146,
+      "Cordoba": 111
     },
     "activo": true
   },
@@ -76,16 +76,16 @@
     "nombre": "Pase 5",
     "categoria": "pase",
     "tags": [
-      "estudiante",
-      "lluvia"
+      "noche",
+      "urbano"
     ],
     "precios": {
-      "Buenos Aires": 14990,
-      "Cordoba": 5790
+      "Buenos Aires": 3490,
+      "Cordoba": 3290
     },
     "stock": {
-      "Buenos Aires": 164,
-      "Cordoba": 96
+      "Buenos Aires": 64,
+      "Cordoba": 105
     },
     "activo": true
   },
@@ -95,15 +95,15 @@
     "categoria": "pase",
     "tags": [
       "noche",
-      "lluvia"
+      "estudiante"
     ],
     "precios": {
-      "Buenos Aires": 9990,
-      "Cordoba": 1890
+      "Buenos Aires": 5990,
+      "Cordoba": 3290
     },
     "stock": {
-      "Buenos Aires": 270,
-      "Cordoba": 49
+      "Buenos Aires": 148,
+      "Cordoba": 31
     },
     "activo": true
   },
@@ -112,16 +112,16 @@
     "nombre": "Pase 7",
     "categoria": "pase",
     "tags": [
-      "noche",
-      "lluvia"
+      "estudiante",
+      "noche"
     ],
     "precios": {
       "Buenos Aires": 3490,
       "Cordoba": 9790
     },
     "stock": {
-      "Buenos Aires": 387,
-      "Cordoba": 26
+      "Buenos Aires": 38,
+      "Cordoba": 31
     },
     "activo": false
   },
@@ -131,15 +131,15 @@
     "categoria": "pase",
     "tags": [
       "noche",
-      "pro"
+      "lluvia"
     ],
     "precios": {
-      "Buenos Aires": 1990,
-      "Cordoba": 1890
+      "Buenos Aires": 3490,
+      "Cordoba": 3290
     },
     "stock": {
-      "Buenos Aires": 309,
-      "Cordoba": 32
+      "Buenos Aires": 382,
+      "Cordoba": 7
     },
     "activo": true
   },
@@ -148,16 +148,16 @@
     "nombre": "Pase 9",
     "categoria": "pase",
     "tags": [
-      "lluvia",
-      "noche"
+      "pro",
+      "lluvia"
     ],
     "precios": {
-      "Buenos Aires": 14990,
-      "Cordoba": 9790
+      "Buenos Aires": 5990,
+      "Cordoba": 3290
     },
     "stock": {
-      "Buenos Aires": 151,
-      "Cordoba": 26
+      "Buenos Aires": 291,
+      "Cordoba": 62
     },
     "activo": true
   },
@@ -167,15 +167,15 @@
     "categoria": "pase",
     "tags": [
       "estudiante",
-      "lluvia"
+      "noche"
     ],
     "precios": {
-      "Buenos Aires": 3490,
-      "Cordoba": 1890
+      "Buenos Aires": 14990,
+      "Cordoba": 3290
     },
     "stock": {
-      "Buenos Aires": 357,
-      "Cordoba": 44
+      "Buenos Aires": 327,
+      "Cordoba": 101
     },
     "activo": true
   },
@@ -184,15 +184,15 @@
     "nombre": "Recarga 1",
     "categoria": "recarga",
     "tags": [
-      "lluvia",
-      "urbano"
+      "estudiante",
+      "pro"
     ],
     "precios": {
-      "Buenos Aires": 9990,
+      "Buenos Aires": 3490,
       "Cordoba": 9790
     },
     "stock": {
-      "Buenos Aires": 383,
+      "Buenos Aires": 190,
       "Cordoba": 107
     },
     "activo": true
@@ -203,15 +203,15 @@
     "categoria": "recarga",
     "tags": [
       "urbano",
-      "lluvia"
+      "estudiante"
     ],
     "precios": {
       "Buenos Aires": 5990,
       "Cordoba": 3290
     },
     "stock": {
-      "Buenos Aires": 227,
-      "Cordoba": 93
+      "Buenos Aires": 137,
+      "Cordoba": 70
     },
     "activo": true
   },
@@ -220,16 +220,16 @@
     "nombre": "Recarga 3",
     "categoria": "recarga",
     "tags": [
-      "urbano",
-      "estudiante"
+      "noche",
+      "lluvia"
     ],
     "precios": {
-      "Buenos Aires": 5990,
-      "Cordoba": 3290
+      "Buenos Aires": 9990,
+      "Cordoba": 9790
     },
     "stock": {
-      "Buenos Aires": 268,
-      "Cordoba": 29
+      "Buenos Aires": 396,
+      "Cordoba": 119
     },
     "activo": true
   },
@@ -239,15 +239,15 @@
     "categoria": "recarga",
     "tags": [
       "estudiante",
-      "lluvia"
+      "noche"
     ],
     "precios": {
-      "Buenos Aires": 9990,
-      "Cordoba": 1890
+      "Buenos Aires": 1990,
+      "Cordoba": 9790
     },
     "stock": {
-      "Buenos Aires": 0,
-      "Cordoba": 0
+      "Buenos Aires": 346,
+      "Cordoba": 46
     },
     "activo": true
   },
@@ -256,16 +256,16 @@
     "nombre": "Recarga 5",
     "categoria": "recarga",
     "tags": [
-      "urbano",
-      "lluvia"
+      "noche",
+      "pro"
     ],
     "precios": {
-      "Buenos Aires": 3490,
-      "Cordoba": 3290
+      "Buenos Aires": 9990,
+      "Cordoba": 1890
     },
     "stock": {
-      "Buenos Aires": 99,
-      "Cordoba": 105
+      "Buenos Aires": 115,
+      "Cordoba": 115
     },
     "activo": true
   },
@@ -274,16 +274,16 @@
     "nombre": "Recarga 6",
     "categoria": "recarga",
     "tags": [
-      "pro",
+      "estudiante",
       "noche"
     ],
     "precios": {
-      "Buenos Aires": 14990,
-      "Cordoba": 9790
+      "Buenos Aires": 5990,
+      "Cordoba": 1890
     },
     "stock": {
-      "Buenos Aires": 348,
-      "Cordoba": 51
+      "Buenos Aires": 48,
+      "Cordoba": 94
     },
     "activo": true
   },
@@ -292,16 +292,16 @@
     "nombre": "Recarga 7",
     "categoria": "recarga",
     "tags": [
-      "estudiante",
-      "noche"
+      "pro",
+      "lluvia"
     ],
     "precios": {
-      "Buenos Aires": 3490,
-      "Cordoba": 9790
+      "Buenos Aires": 5990,
+      "Cordoba": 1890
     },
     "stock": {
-      "Buenos Aires": 328,
-      "Cordoba": 59
+      "Buenos Aires": 337,
+      "Cordoba": 30
     },
     "activo": true
   },
@@ -311,15 +311,15 @@
     "categoria": "recarga",
     "tags": [
       "estudiante",
-      "urbano"
+      "pro"
     ],
     "precios": {
-      "Buenos Aires": 5990,
-      "Cordoba": 9790
+      "Buenos Aires": 14990,
+      "Cordoba": 1890
     },
     "stock": {
-      "Buenos Aires": 32,
-      "Cordoba": 119
+      "Buenos Aires": 155,
+      "Cordoba": 40
     },
     "activo": true
   },
@@ -332,12 +332,12 @@
       "noche"
     ],
     "precios": {
-      "Buenos Aires": 5990,
-      "Cordoba": 5790
+      "Buenos Aires": 14990,
+      "Cordoba": 9790
     },
     "stock": {
-      "Buenos Aires": 338,
-      "Cordoba": 19
+      "Buenos Aires": 161,
+      "Cordoba": 52
     },
     "activo": true
   },
@@ -346,16 +346,16 @@
     "nombre": "Recarga 10",
     "categoria": "recarga",
     "tags": [
-      "noche",
-      "lluvia"
+      "lluvia",
+      "estudiante"
     ],
     "precios": {
-      "Buenos Aires": 1990,
-      "Cordoba": 3290
+      "Buenos Aires": 3490,
+      "Cordoba": 5790
     },
     "stock": {
-      "Buenos Aires": 101,
-      "Cordoba": 88
+      "Buenos Aires": 67,
+      "Cordoba": 20
     },
     "activo": true
   },
@@ -364,16 +364,16 @@
     "nombre": "Accesorio 1",
     "categoria": "accesorio",
     "tags": [
-      "lluvia",
-      "estudiante"
+      "pro",
+      "urbano"
     ],
     "precios": {
-      "Buenos Aires": 9990,
-      "Cordoba": 5790
+      "Buenos Aires": 1990,
+      "Cordoba": 3290
     },
     "stock": {
-      "Buenos Aires": 77,
-      "Cordoba": 108
+      "Buenos Aires": 181,
+      "Cordoba": 9
     },
     "activo": true
   },
@@ -386,12 +386,12 @@
       "estudiante"
     ],
     "precios": {
-      "Buenos Aires": 1990,
-      "Cordoba": 9790
+      "Buenos Aires": 14990,
+      "Cordoba": 1890
     },
     "stock": {
-      "Buenos Aires": 270,
-      "Cordoba": 78
+      "Buenos Aires": 252,
+      "Cordoba": 40
     },
     "activo": true
   },
@@ -400,16 +400,16 @@
     "nombre": "Accesorio 3",
     "categoria": "accesorio",
     "tags": [
-      "urbano",
-      "noche"
+      "pro",
+      "lluvia"
     ],
     "precios": {
-      "Buenos Aires": 5990,
-      "Cordoba": 3290
+      "Buenos Aires": 3490,
+      "Cordoba": 9790
     },
     "stock": {
-      "Buenos Aires": 141,
-      "Cordoba": 24
+      "Buenos Aires": 326,
+      "Cordoba": 108
     },
     "activo": true
   },
@@ -418,16 +418,16 @@
     "nombre": "Accesorio 4",
     "categoria": "accesorio",
     "tags": [
-      "urbano",
-      "lluvia"
+      "pro",
+      "urbano"
     ],
     "precios": {
-      "Buenos Aires": 1990,
+      "Buenos Aires": 14990,
       "Cordoba": 1890
     },
     "stock": {
-      "Buenos Aires": 306,
-      "Cordoba": 86
+      "Buenos Aires": 65,
+      "Cordoba": 72
     },
     "activo": true
   },
@@ -436,16 +436,16 @@
     "nombre": "Accesorio 5",
     "categoria": "accesorio",
     "tags": [
-      "lluvia",
-      "noche"
+      "estudiante",
+      "lluvia"
     ],
     "precios": {
       "Buenos Aires": 9990,
-      "Cordoba": 3290
+      "Cordoba": 9790
     },
     "stock": {
-      "Buenos Aires": 36,
-      "Cordoba": 12
+      "Buenos Aires": 261,
+      "Cordoba": 66
     },
     "activo": true
   },
@@ -455,15 +455,15 @@
     "categoria": "accesorio",
     "tags": [
       "pro",
-      "noche"
+      "lluvia"
     ],
     "precios": {
-      "Buenos Aires": 14990,
+      "Buenos Aires": 1990,
       "Cordoba": 5790
     },
     "stock": {
-      "Buenos Aires": 227,
-      "Cordoba": 0
+      "Buenos Aires": 269,
+      "Cordoba": 100
     },
     "activo": true
   },
@@ -472,16 +472,16 @@
     "nombre": "Accesorio 7",
     "categoria": "accesorio",
     "tags": [
-      "pro",
-      "lluvia"
+      "lluvia",
+      "noche"
     ],
     "precios": {
-      "Buenos Aires": 14990,
-      "Cordoba": 1890
+      "Buenos Aires": 1990,
+      "Cordoba": 3290
     },
     "stock": {
-      "Buenos Aires": 63,
-      "Cordoba": 113
+      "Buenos Aires": 215,
+      "Cordoba": 13
     },
     "activo": true
   },
@@ -490,16 +490,16 @@
     "nombre": "Accesorio 8",
     "categoria": "accesorio",
     "tags": [
-      "estudiante",
-      "pro"
+      "urbano",
+      "estudiante"
     ],
     "precios": {
-      "Buenos Aires": 14990,
-      "Cordoba": 3290
+      "Buenos Aires": 1990,
+      "Cordoba": 9790
     },
     "stock": {
-      "Buenos Aires": 356,
-      "Cordoba": 14
+      "Buenos Aires": 124,
+      "Cordoba": 10
     },
     "activo": true
   },
@@ -508,16 +508,16 @@
     "nombre": "Accesorio 9",
     "categoria": "accesorio",
     "tags": [
-      "pro",
-      "noche"
+      "lluvia",
+      "urbano"
     ],
     "precios": {
-      "Buenos Aires": 9990,
-      "Cordoba": 5790
+      "Buenos Aires": 5990,
+      "Cordoba": 1890
     },
     "stock": {
-      "Buenos Aires": 152,
-      "Cordoba": 49
+      "Buenos Aires": 183,
+      "Cordoba": 105
     },
     "activo": true
   },
@@ -526,16 +526,16 @@
     "nombre": "Accesorio 10",
     "categoria": "accesorio",
     "tags": [
-      "urbano",
-      "estudiante"
+      "pro",
+      "lluvia"
     ],
     "precios": {
-      "Buenos Aires": 1990,
+      "Buenos Aires": 14990,
       "Cordoba": 1890
     },
     "stock": {
-      "Buenos Aires": 308,
-      "Cordoba": 49
+      "Buenos Aires": 155,
+      "Cordoba": 37
     },
     "activo": true
   },
@@ -544,16 +544,16 @@
     "nombre": "Seguro 1",
     "categoria": "seguro",
     "tags": [
-      "lluvia",
-      "noche"
+      "estudiante",
+      "lluvia"
     ],
     "precios": {
       "Buenos Aires": 5990,
-      "Cordoba": 5790
+      "Cordoba": 9790
     },
     "stock": {
-      "Buenos Aires": 143,
-      "Cordoba": 56
+      "Buenos Aires": 4,
+      "Cordoba": 76
     },
     "activo": true
   },
@@ -562,16 +562,16 @@
     "nombre": "Seguro 2",
     "categoria": "seguro",
     "tags": [
-      "urbano",
-      "lluvia"
+      "lluvia",
+      "pro"
     ],
     "precios": {
-      "Buenos Aires": 9990,
+      "Buenos Aires": 5990,
       "Cordoba": 5790
     },
     "stock": {
-      "Buenos Aires": 66,
-      "Cordoba": 15
+      "Buenos Aires": 161,
+      "Cordoba": 19
     },
     "activo": true
   },
@@ -581,15 +581,15 @@
     "categoria": "seguro",
     "tags": [
       "pro",
-      "lluvia"
+      "urbano"
     ],
     "precios": {
-      "Buenos Aires": 5990,
-      "Cordoba": 3290
+      "Buenos Aires": 14990,
+      "Cordoba": 9790
     },
     "stock": {
-      "Buenos Aires": 291,
-      "Cordoba": 61
+      "Buenos Aires": 54,
+      "Cordoba": 52
     },
     "activo": true
   },
@@ -598,16 +598,16 @@
     "nombre": "Seguro 4",
     "categoria": "seguro",
     "tags": [
-      "estudiante",
-      "lluvia"
+      "noche",
+      "estudiante"
     ],
     "precios": {
       "Buenos Aires": 5990,
-      "Cordoba": 5790
+      "Cordoba": 9790
     },
     "stock": {
-      "Buenos Aires": 39,
-      "Cordoba": 73
+      "Buenos Aires": 300,
+      "Cordoba": 14
     },
     "activo": true
   },
@@ -617,15 +617,15 @@
     "categoria": "seguro",
     "tags": [
       "lluvia",
-      "noche"
+      "pro"
     ],
     "precios": {
-      "Buenos Aires": 3490,
-      "Cordoba": 1890
+      "Buenos Aires": 14990,
+      "Cordoba": 5790
     },
     "stock": {
-      "Buenos Aires": 268,
-      "Cordoba": 47
+      "Buenos Aires": 156,
+      "Cordoba": 58
     },
     "activo": true
   },
@@ -634,16 +634,16 @@
     "nombre": "Seguro 6",
     "categoria": "seguro",
     "tags": [
-      "estudiante",
-      "pro"
+      "pro",
+      "estudiante"
     ],
     "precios": {
-      "Buenos Aires": 3490,
-      "Cordoba": 5790
+      "Buenos Aires": 1990,
+      "Cordoba": 9790
     },
     "stock": {
-      "Buenos Aires": 272,
-      "Cordoba": 32
+      "Buenos Aires": 267,
+      "Cordoba": 93
     },
     "activo": true
   },
@@ -652,16 +652,16 @@
     "nombre": "Seguro 7",
     "categoria": "seguro",
     "tags": [
-      "urbano",
-      "noche"
+      "pro",
+      "urbano"
     ],
     "precios": {
-      "Buenos Aires": 3490,
-      "Cordoba": 5790
+      "Buenos Aires": 1990,
+      "Cordoba": 3290
     },
     "stock": {
-      "Buenos Aires": 341,
-      "Cordoba": 66
+      "Buenos Aires": 90,
+      "Cordoba": 73
     },
     "activo": true
   },
@@ -670,16 +670,16 @@
     "nombre": "Seguro 8",
     "categoria": "seguro",
     "tags": [
-      "noche",
-      "estudiante"
+      "urbano",
+      "noche"
     ],
     "precios": {
-      "Buenos Aires": 1990,
-      "Cordoba": 5790
+      "Buenos Aires": 5990,
+      "Cordoba": 1890
     },
     "stock": {
-      "Buenos Aires": 128,
-      "Cordoba": 11
+      "Buenos Aires": 217,
+      "Cordoba": 90
     },
     "activo": true
   },
@@ -688,16 +688,16 @@
     "nombre": "Seguro 9",
     "categoria": "seguro",
     "tags": [
-      "estudiante",
-      "pro"
+      "lluvia",
+      "estudiante"
     ],
     "precios": {
-      "Buenos Aires": 14990,
-      "Cordoba": 9790
+      "Buenos Aires": 9990,
+      "Cordoba": 5790
     },
     "stock": {
-      "Buenos Aires": 2,
-      "Cordoba": 67
+      "Buenos Aires": 132,
+      "Cordoba": 91
     },
     "activo": true
   },
@@ -706,16 +706,16 @@
     "nombre": "Seguro 10",
     "categoria": "seguro",
     "tags": [
-      "urbano",
-      "estudiante"
+      "pro",
+      "noche"
     ],
     "precios": {
       "Buenos Aires": 5990,
-      "Cordoba": 9790
+      "Cordoba": 5790
     },
     "stock": {
-      "Buenos Aires": 146,
-      "Cordoba": 35
+      "Buenos Aires": 294,
+      "Cordoba": 65
     },
     "activo": true
   }

@@ -1,0 +1,13 @@
+dataset: silver_clima_horario
+version: 1.0.0
+owner: Agustín Martínez
+capa: silver
+ubicacion: lake/silver/silver_clima_horario · Databricks workspace.nexo_silver.silver_clima_horario
+grano: estación × hora (UTC)
+clave_primaria: [station_id, ts_hora]
+frescura_sla: diario; Open-Meteo archive publica con ~5 días de demora
+productor: 03-databricks/01_ingesta.py
+fuente: https://archive-api.open-meteo.com/v1/archive (sin API key)
+schema: [station_id string, ts_hora timestamp, temp_c double, precip_mm double, lluvia_mm double, weather_code int,
+         viento_kmh double, adverso boolean, fuente string, ingestado_utc timestamp]
+reglas: adverso = weather_code >= 51 (WMO llovizna/lluvia/tormenta) o precip_mm > 0.2

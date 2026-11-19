@@ -1,0 +1,12 @@
+dataset: silver_social
+version: 1.0.0
+owner: Agustín Martínez
+capa: silver
+grano: un post
+clave_primaria: [fuente, post_id]
+frescura_sla: cada ejecución del notebook (diario)
+productor: 03-databricks/01_ingesta.py
+fuentes: Mastodon /api/v1/timelines/tag/<tag> (público) · Bluesky app.bsky.feed.searchPosts (App Password, opcional)
+schema: [fuente string, post_id string, consulta string, idioma string, texto string, url string, autor string,
+         creado_utc timestamp, menciona_incidente boolean, ingestado_utc timestamp]
+reglas: [texto sin HTML ni espacios repetidos, texto no vacío, sin duplicados por (fuente, post_id)]

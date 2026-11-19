@@ -1,76 +1,93 @@
 # NexoUrbano 2026 — Squad 2002
 
-Lakehouse operacional de micromovilidad eléctrica (Buenos Aires): Bronze / Silver / Gold sobre Azure Data Lake (o MinIO), Databricks, Hadoop, Spark, MongoDB, Cassandra y Neo4j.
+Lakehouse operacional de micromovilidad eléctrica en Buenos Aires: Bronze / Silver / Gold sobre Azure Data Lake (y MinIO),
+Databricks, Hadoop (HDFS, MapReduce, Hive, HBase, Pig, Flume), Spark batch + streaming, MongoDB, Cassandra y Neo4j,
+cerrado con un producto que responde 5 preguntas de negocio.
 
-> Enunciado: `TP_NexoUrbano_2026.md` del pack de cátedra (no incluido acá a propósito: el producto no se entrega mezclado con el pack).
+**Squad:** Gabriel Donoso · Julián Spinedi · Agustín Martínez — semilla `--seed 2002` — 1 000 000 de viajes sintéticos + EcoBici real.
 
-## Levantar el entorno (< 20 min)
+> Enunciado: `TP_NexoUrbano_2026.md` del pack de cátedra (no se incluye: el producto no se entrega mezclado con el pack).
 
-Requisitos: Docker Desktop, Python 3.10+, Git.
+## Levantar todo (< 20 min + descargas)
 
-```bash
-# 1. Secretos
-cp .env.example .env          # Windows PowerShell: Copy-Item .env.example .env
-#    editar .env y cambiar las contraseñas
+Requisitos: **Docker Desktop** (WSL 2) y PowerShell. No hace falta Python ni Java en Windows: todo corre en contenedores.
 
-# 2. Datos (data/viajes.csv no se versiona: pesa 40 MB)
-python tools/generar_datos.py --seed 2002 --n-viajes 250000 --out data
-
-# 3. Servicios
-docker compose up -d mysql mongo minio minio-init
-docker compose ps             # mysql y mongo en "healthy"
-docker compose up -d neo4j    # cuando lleguemos a S4
-docker compose up -d cassandra
+```powershell
+.\run.ps1 setup    # crea .env con contraseñas aleatorias, construye imágenes, genera 1 M viajes, levanta la base
+.\run.ps1 s1       # M1–M3: EcoBici + perfilado + Open-Meteo/Mastodon + Data Lake
+.\run.ps1 s2       # M4–M7: Hadoop
+.\run.ps1 s3       # M8–M9: Spark batch + streaming
+.\run.ps1 s4       # M10–M14: Mongo, Cassandra, Neo4j, producto
+.\run.ps1 help     # lista de pasos sueltos (ej. .\run.ps1 s2.hive)
 ```
 
-| Servicio | URL / puerto | Usuario |
+Si PowerShell bloquea el script: `Set-ExecutionPolicy -Scope Process Bypass` en la misma ventana.
+
+| Servicio | URL / puerto | Perfil |
 |---|---|---|
-| MySQL (CRM) | `localhost:3306`, base `crm` | `root` / `MYSQL_ROOT_PASSWORD` |
-| MongoDB | `mongodb://localhost:27017` | sin auth (solo local) |
-| Cassandra | `localhost:9042` | — |
-| Neo4j Browser | http://localhost:7474 | `neo4j` / `NEO4J_PASSWORD` |
-| MinIO consola | http://localhost:9001 | `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` |
+| MySQL (CRM) | `localhost:3306`, base `crm` | base |
+| MongoDB | `mongodb://localhost:27017` | base |
+| MinIO consola | http://localhost:9001 | base |
+| Spark UI (mientras corre un job) | http://localhost:4040 | base (`tools`) |
+| HDFS / YARN | http://localhost:9870 · http://localhost:8088 | `hadoop` |
+| HiveServer2 / HBase | `localhost:10000` · http://localhost:16010 | `hadoop` |
+| Cassandra | `localhost:9042` | `cassandra` |
+| Neo4j Browser | http://localhost:7474 | `neo4j` |
 
-Los datos de `data/` se montan en `/import` dentro de mongo, cassandra y neo4j para cargarlos sin copiar archivos a mano.
-
-**RAM:** con 8 GB levantar un NoSQL por vez. Con 16 GB, MySQL + Mongo + Neo4j juntos y Cassandra aparte.
+**RAM:** `run.ps1 s4` apaga Hadoop antes de levantar Cassandra y Neo4j, así entra en 8 GB asignados a Docker.
 
 ## Data Lake
 
-- URI Bronze: `TODO abfss://bronze@<cuenta>.dfs.core.windows.net/viajes/yyyy/mm/dd/` (o `s3a://bronze/viajes/...` en MinIO)
+- Azure: `abfss://bronze@<cuenta>.dfs.core.windows.net/viajes/yyyy/mm/dd/viajes.csv` ← **TODO pegar la URI real**
+- MinIO (plan B, mismo layout): `s3a://bronze/viajes/yyyy/mm/dd/viajes.csv`
 
 ## Estructura
 
-| Carpeta | Módulo | Sprint |
+| Carpeta | Módulo | Entrada principal |
 |---|---|---|
-| `01-discovery/` | M1 · 4 V, perfilado, arquitectura | S1 |
-| `02-azure-datalake/` | M2 · ADLS Gen2 / MinIO | S1 |
-| `03-databricks/` | M3 · ingesta API clima + social | S1 |
-| `04-hadoop/` | M4–M7 · HDFS, MapReduce, HBase, Hive, Pig, Sqoop, Flume | S2 |
-| `05-spark/` | M8–M9 · batch Gold + Structured Streaming | S3 |
-| `06-mongodb/` | M10–M11 · catálogo + agregaciones | S4 |
-| `07-cassandra/` | M12 · series temporales | S4 |
-| `08-neo4j/` | M13 · grafo social | S4 |
-| `09-producto/` | M14 · 5 preguntas de negocio | S4 |
-| `contratos/` | data contracts YAML | todos |
-| `ADR/` | decisiones de arquitectura | todos |
-| `evidence/` | logs y capturas con su comando | todos |
+| `01-discovery/` | M1 | `4V.md`, `arquitectura.md`, `perfilado.py` → `perfilado/`, `acta_squad.md` |
+| `02-azure-datalake/` | M2 | `subir_bronze.py`, guía del portal |
+| `03-databricks/` | M3 | `01_ingesta.py` (notebook Databricks, corre también local) |
+| `04-hadoop/` | M4–M7 | `hdfs/`, `mapreduce/`, `hbase/`, `hive/`, `pig/`, `sqoop/`, `flume/` |
+| `05-spark/` | M8–M9 | `batch/job_gold.py` + `explain.txt`, `streaming/stream_alertas.py` |
+| `06-mongodb/` | M10–M11 | `crud.js`, `agg_ventas.js` |
+| `07-cassandra/` | M12 | `schema.cql`, `load.cql`, `queries.cql` |
+| `08-neo4j/` | M13 | `prep_grafo.py`, `grafo.cypher`, `queries.cypher` |
+| `09-producto/` | M14 | `decision_ops.py` → `decision_ops.md`, `ventas_agg.json` |
+| `contratos/` | — | data contracts Bronze, Silver y Gold |
+| `ADR/` | — | 7 decisiones (000–006) |
+| `evidence/` | — | logs de cada comando (los escribe `run.ps1`) y capturas |
+| `docker/`, `docker-compose.yml`, `run.ps1` | — | infraestructura |
+| `tools/` | — | generador, helper común, replay del stream |
+
+`data/viajes.csv` (160 MB) y `lake/` no se versionan: se regeneran con `.\run.ps1 setup` y los jobs.
 
 ## Demo (8 min)
 
-Link al video: `TODO`
+Video: **TODO link** — guion:
 
-1. Problema de negocio (45 s)
-2. Arquitectura y 4 V (60 s)
-3. Ingesta lakehouse: Azure + Databricks (90 s)
-4. Hadoop como capa batch heredada (90 s)
-5. Spark batch + streaming (90 s)
-6. Polyglot: Mongo + Cassandra + Neo4j, una query cada uno (90 s)
-7. Métricas Gold y la decisión del ops manager (45 s)
+1. **Problema** (45 s): ops no sabe dónde reponer cuando llueve, qué scooter retirar ni si hay fraude.
+2. **Arquitectura y 4 V** (60 s): `01-discovery/arquitectura.md`, una V → un motor.
+3. **Ingesta lakehouse** (90 s): listado de `bronze/viajes/yyyy/mm/dd` en Azure + notebook Databricks con clima y Mastodon.
+4. **Hadoop** (90 s): `hdfs fsck` (2 bloques), top 20 del WordCount (#cobro), DROP externa vs. interna en Hive.
+5. **Spark** (90 s): `explain.txt` (poda de particiones + broadcast) y consola del streaming con el evento tardío descartado.
+6. **Polyglot** (90 s): Mongo `$lookup` top 5, Cassandra `PER PARTITION LIMIT 1` + query que falla, Neo4j recomendación.
+7. **Decisión** (45 s): `09-producto/decision_ops.md`, las 5 respuestas.
 
-## Recortes de alcance
+## Recortes de alcance (sección 8)
 
-Ninguno por ahora. Si se recorta algo, anotarlo acá con la sección 8 del enunciado que lo autoriza y el ADR correspondiente.
+| Recorte | Autorizado por | Detalle |
+|---|---|---|
+| Sqoop nativo → Spark JDBC | 8.6 | `04-hadoop/sqoop/`, `ADR/004-pig-vs-spark.md` |
+| Kafka | 8.2 (opcional) | `ADR/005-ingesta-streaming.md` |
+
+No se recortó el millón de filas (8.4) ni Azure real (8.5).
+
+## Limitaciones conocidas (honestidad de datos)
+
+- El dataset sintético reparte los viajes parejo en las 24 h y no correlaciona con el clima real: en P1 la lluvia no cambia la demanda y el reporte lo dice. EcoBici sí tiene estacionalidad (`01-discovery/perfilado/ecobici.md`).
+- Los tickets de `texto_ops.txt` no tienen fecha: P5 compara totales, no meses.
+- Con RF=1 en Cassandra, ONE y QUORUM se comportan igual; el ADR 006 explica la diferencia con RF=3.
 
 ## Checklist de entrega
 

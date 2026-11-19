@@ -1,10 +1,9 @@
-# M12 · Cassandra
+# M12 · Cassandra: series temporales de sensores
 
-Estado: pendiente
+`.\run.ps1 s4.cassandra` → `schema.cql`, `load.cql` (COPY de 6 000 lecturas), `queries.cql`. Log: `evidence/cassandra/cassandra.log`.
 
-## Entregables
-
-- [ ] schema.cql — keyspace `nexo` RF=1, tabla `lecturas_vehiculo` (PK vehicle_id, clustering ts DESC)
-- [ ] queries.cql — últimas 20, rango horario, query que falla por no respetar la PK
-- [ ] Carga: `COPY ... FROM '/import/lecturas_sensores.csv'`
-- [ ] ONE vs. QUORUM en `ADR/006-cassandra-consistencia.md`
+- PK `((vehicle_id), ts)` con `CLUSTERING ORDER BY (ts DESC)`: "últimas N lecturas de un vehículo" es leer el principio de una partición.
+- `PER PARTITION LIMIT 1` da la última lectura de cada vehículo (insumo de P2 en `09-producto`).
+- Queries 4 y 5 fallan **a propósito** (filtro por `battery_pct` y rango de `ts` sin `vehicle_id`): Cassandra pide `ALLOW FILTERING` porque tendría que recorrer todas las particiones.
+- TTL de 90 días y TimeWindowCompactionStrategy: la telemetría vieja se va sola y se compacta por día.
+- Consistencia ONE vs. QUORUM: `ADR/006-cassandra-consistencia.md`.

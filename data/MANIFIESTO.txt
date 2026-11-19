@@ -1,8 +1,8 @@
 NexoUrbano dataset sintético
 seed=2002
 ciudad=Buenos Aires
-n_viajes=250000
-generado_utc=2026-11-19T15:28:27.487773+00:00
+n_viajes=1000000
+generado_utc=2026-11-19T15:45:10.021152+00:00
 
 Archivos:
 - estaciones.csv, riders.csv, vehiculos.csv

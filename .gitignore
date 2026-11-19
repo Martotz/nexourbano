@@ -28,3 +28,14 @@ venv/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Lake local (bronze/silver/gold que escriben los jobs) y dataset abierto completo
+lake/
+data/abierto/*
+!data/abierto/ecobici_muestra.csv
+!data/abierto/MANIFIESTO_ecobici.json
+data/stream_in/
+data/flume_spool/
+data/derived/
+tools/paso.txt
+evidence/_consola/

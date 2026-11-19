@@ -3,8 +3,8 @@
 # Actualizar umbrales de "calidad" con lo medido en 01-discovery/perfilado.py.
 
 dataset: bronze_viajes
-version: 0.1.0
-owner: squad_platform        # TODO: nombre del owner (ver ADR/000-contexto.md)
+version: 1.0.0
+owner: Gabriel Donoso
 grano: un viaje (ride_id)
 timezone: UTC                # timestamps ISO-8601 con offset +00:00
 formato: csv
@@ -14,8 +14,8 @@ particionado: ts_start (yyyy/mm/dd) en el Data Lake -> bronze/viajes/yyyy/mm/dd/
 clave_primaria: ride_id
 frescura_sla: batch diario 06:00 ART
 fuentes:
-  - generador sintético tools/generar_datos.py --seed 2002 --n-viajes 250000
-  - dataset abierto de movilidad (TODO: URL + fecha de descarga)
+  - generador sintético tools/generar_datos.py --seed 2002 --n-viajes 1000000
+  - dataset abierto EcoBici (URL y fecha en data/abierto/MANIFIESTO_ecobici.json)
 
 columnas:
   - {nombre: ride_id,       tipo: string,    nullable: false, ejemplo: T0000000}
@@ -44,7 +44,11 @@ reglas_rechazo_silver:
   - fare_ars < 0
   - km = 0 con duration_s > 600   # distancia nula sospechosa (M7 Pig)
 
+# Medido en 01-discovery/perfilado/sintetico_seed2002.md (1 000 000 filas):
+#   nulos 0 % en todas las columnas · 0 ride_id duplicados · duration_s p50 243 s, p95 801 s, max 20 000 s
+#   rechazos Silver: 13 392 (< 30 s) + 6 781 (> 4 h) + 9 (km = 0 con > 10 min) = 2,02 %
 calidad:
-  nulos_max_pct: 2           # TODO: ajustar post-perfilado
+  nulos_max_pct: 0.5          # medido 0 %: cualquier nulo es una regresión del productor
   duplicados_ride_id: 0
+  rechazo_max_pct: 3          # medido 2,02 %: si supera 3 % se frena el pipeline
   late_data_horas: 24

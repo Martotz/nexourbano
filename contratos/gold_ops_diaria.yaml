@@ -1,0 +1,13 @@
+dataset: gold_ops_diaria
+version: 1.0.0
+owner: Gabriel Donoso
+capa: gold
+grano: un día (fecha UTC)
+clave_primaria: fecha
+frescura_sla: diario 07:00 ART
+productor: 05-spark/batch/job_gold.py
+consumidores: 09-producto/decision_ops.py (P5), demo
+schema: [fecha date, viajes long, minutos double, km double, pct_clima_adverso double, revenue_viajes_ars double,
+         riders_activos long, vehiculos_usados long, pct_viajes_plan_pro double, revenue_ventas_ars long, ventas long,
+         revenue_total_ars double]
+nota: el último día (2026-05-30) es parcial porque el generador corta a las 00:00

@@ -1,0 +1,14 @@
+dataset: silver_viajes
+version: 1.0.0
+owner: Gabriel Donoso
+capa: silver
+ubicacion: lake/silver/silver_viajes (Delta) · Hive nexo.silver_viajes (Parquet)
+grano: un viaje válido (ride_id)
+clave_primaria: ride_id
+particionado: fecha (date de ts_start, UTC)
+frescura_sla: diario 06:30 ART (después de bronze_viajes)
+productor: 05-spark/batch/job_gold.py
+reglas: contratos/bronze_viajes.yaml -> reglas_rechazo_silver; los rechazos van a silver_viajes_rechazos con columna motivo
+schema: [ride_id string, ts_start timestamp, ts_end timestamp, duration_s int, rider_id string, vehicle_id string,
+         station_start string, station_end string, barrio_start string, barrio_end string, lat_start double, lon_start double,
+         lat_end double, lon_end double, km double, fare_ars double, clima_codigo int, fecha date]

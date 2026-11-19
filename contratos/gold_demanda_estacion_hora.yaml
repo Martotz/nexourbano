@@ -1,0 +1,11 @@
+dataset: gold_demanda_estacion_hora
+version: 1.0.0
+owner: Gabriel Donoso
+capa: gold
+grano: estación × hora del día (UTC) × clima_adverso
+clave_primaria: [station_start, hora, clima_adverso]
+frescura_sla: diario 07:00 ART
+productor: 05-spark/batch/job_gold.py
+consumidores: 09-producto/decision_ops.py (P1)
+schema: [station_start string, hora int, clima_adverso boolean, viajes_por_hora double, horas_observadas long,
+         barrio string, capacidad int]

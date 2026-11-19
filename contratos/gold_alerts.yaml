@@ -1,0 +1,12 @@
+dataset: gold_alerts
+version: 1.0.0
+owner: Gabriel Donoso
+capa: gold
+grano: ventana de 2 min (slide 30 s)
+clave_primaria: [inicio, fin]
+frescura_sla: < 1 min después de que el watermark (1 min) cierra la ventana
+productor: 05-spark/streaming/stream_alertas.py (append)
+schema: [inicio timestamp, fin timestamp, eventos long, payment_fail long, battery_low long,
+         vehiculos_payment_fail array<string>, alerta string]
+reglas: alerta si payment_fail >= 7 o battery_low >= 8 por ventana (media + 2 desvíos de la línea base)
+late_data: eventos con más de 1 min de atraso respecto del máximo visto se descartan

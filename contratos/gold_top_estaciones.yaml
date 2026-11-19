@@ -1,0 +1,9 @@
+dataset: gold_top_estaciones
+version: 1.0.0
+owner: Gabriel Donoso
+capa: gold
+grano: (periodo, fecha, rank) — periodo 'dia' = top 10 de cada día; 'total' = top 10 del período
+clave_primaria: [periodo, fecha, rank]
+frescura_sla: diario 07:00 ART
+productor: 05-spark/batch/job_gold.py
+schema: [fecha date, station_start string, barrio_start string, viajes long, rank int, periodo string]

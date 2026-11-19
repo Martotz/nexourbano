@@ -1,19 +1,25 @@
 # Entorno local NexoUrbano — squad 2002
-# Credenciales y puertos salen de .env (copiar .env.example -> .env).
+# Todo se maneja con .\run.ps1 (ver README). Credenciales en .env (run.ps1 setup lo crea).
 #
-#   docker compose up -d mysql mongo minio minio-init   # S1 / S2
-#   docker compose up -d neo4j                          # S4
-#   docker compose up -d cassandra                      # S4 (aparte si hay 8 GB de RAM)
-#
-# Hadoop/Hive/HBase: sandbox de la cátedra (ver 04-hadoop/README.md).
+# Perfiles (para no levantar todo junto con poca RAM):
+#   (sin perfil)  mysql, mongo, minio, minio-init, tools
+#   hadoop        namenode, datanode, resourcemanager, nodemanager, hadoop-edge, hive, hbase
+#   cassandra     cassandra
+#   neo4j         neo4j
 #
 # Correcciones respecto al pack de cátedra:
 #   - mysql: "3306:3307" -> "${MYSQL_PORT}:3306" (MySQL escucha en 3306 dentro del contenedor)
 #   - mongo: "27018:27018" -> "${MONGO_PORT}:27017" (Mongo escucha en 27017 dentro del contenedor)
-#   - contraseñas movidas a .env
-#   - minio-init crea los buckets bronze/silver/gold
+#   - contraseñas en .env, healthchecks, repo montado en /nexo en cada servicio
+
+x-hadoop: &hadoop
+  image: apache/hadoop:3.3.6
+  env_file: ./docker/hadoop/config
+  profiles: ["hadoop"]
+  restart: unless-stopped
 
 services:
+  # ---------------------------------------------------------------- base
   mysql:
     image: mysql:8.4
     container_name: nexo-mysql
@@ -30,7 +36,7 @@ services:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD"]
       interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 12
 
   mongo:
     image: mongo:8
@@ -40,44 +46,12 @@ services:
       - "${MONGO_PORT:-27017}:27017"
     volumes:
       - mongo_data:/data/db
-      - ./data:/import:ro
+      - ./:/nexo
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
       interval: 10s
       timeout: 5s
-      retries: 10
-
-  cassandra:
-    image: cassandra:5
-    container_name: nexo-cassandra
-    restart: unless-stopped
-    ports:
-      - "${CASSANDRA_PORT:-9042}:9042"
-    environment:
-      MAX_HEAP_SIZE: 512M
-      HEAP_NEWSIZE: 128M
-    volumes:
-      - cassandra_data:/var/lib/cassandra
-      - ./data:/import:ro
-    healthcheck:
-      test: ["CMD-SHELL", "cqlsh -e 'describe keyspaces' || exit 1"]
-      interval: 20s
-      timeout: 10s
-      retries: 15
-
-  neo4j:
-    image: neo4j:5-community
-    container_name: nexo-neo4j
-    restart: unless-stopped
-    ports:
-      - "7474:7474"
-      - "7687:7687"
-    environment:
-      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:?definir en .env}
-      NEO4J_PLUGINS: '["apoc"]'
-    volumes:
-      - neo4j_data:/data
-      - ./data:/import:ro
+      retries: 12
 
   minio:
     image: minio/minio:latest
@@ -96,9 +70,9 @@ services:
       test: ["CMD", "mc", "ready", "local"]
       interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 12
 
-  # Crea los buckets bronze/silver/gold (layout igual al de ADLS Gen2) y termina.
+  # Crea los buckets bronze/silver/gold (mismo layout que ADLS Gen2) y termina.
   minio-init:
     image: minio/mc:latest
     container_name: nexo-minio-init
@@ -115,9 +89,145 @@ services:
       mc ls nexo
       "
 
+  # Python + Java + Spark + drivers. Todo el código Python del TP corre acá.
+  tools:
+    build: ./docker/tools
+    image: nexo-tools:1.0
+    container_name: nexo-tools
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NEXO_LAKE: /nexo/lake
+      MYSQL_HOST: mysql
+      MONGO_URI: mongodb://mongo:27017
+      CASSANDRA_HOST: cassandra
+      NEO4J_URI: bolt://neo4j:7687
+      MINIO_ENDPOINT: minio:9000
+      HDFS_URI: hdfs://namenode:8020
+    ports:
+      - "4040:4040"     # Spark UI
+    volumes:
+      - ./:/nexo
+
+  # ---------------------------------------------------------------- hadoop
+  namenode:
+    <<: *hadoop
+    container_name: nexo-namenode
+    hostname: namenode
+    command: ["hdfs", "namenode"]
+    environment:
+      ENSURE_NAMENODE_DIR: /tmp/hadoop-hadoop/dfs/name
+    ports:
+      - "9870:9870"     # UI HDFS
+    # HDFS es efímero a propósito: los scripts de S2 lo vuelven a poblar desde data/.
+
+  datanode:
+    <<: *hadoop
+    container_name: nexo-datanode
+    hostname: datanode
+    command: ["hdfs", "datanode"]
+    depends_on: [namenode]
+
+  resourcemanager:
+    <<: *hadoop
+    container_name: nexo-resourcemanager
+    hostname: resourcemanager
+    command: ["yarn", "resourcemanager"]
+    ports:
+      - "8088:8088"     # UI YARN
+
+  nodemanager:
+    <<: *hadoop
+    container_name: nexo-nodemanager
+    hostname: nodemanager
+    command: ["yarn", "nodemanager"]
+    depends_on: [resourcemanager]
+
+  # Cliente: hdfs dfs, MapReduce, Pig, Flume
+  hadoop-edge:
+    <<: *hadoop
+    build: ./docker/hadoop
+    image: nexo-hadoop-edge:1.0
+    container_name: nexo-hadoop-edge
+    hostname: edge
+    command: ["sleep", "infinity"]
+    depends_on: [namenode, datanode, resourcemanager]
+    volumes:
+      - ./:/nexo
+
+  hive:
+    image: apache/hive:4.0.1
+    container_name: nexo-hive
+    profiles: ["hadoop"]
+    restart: unless-stopped
+    depends_on: [namenode, datanode]
+    environment:
+      SERVICE_NAME: hiveserver2
+      SERVICE_OPTS: >-
+        -Dhive.metastore.warehouse.dir=hdfs://namenode:8020/user/hive/warehouse
+        -Dmetastore.warehouse.dir=hdfs://namenode:8020/user/hive/warehouse
+        -Dhive.exec.dynamic.partition.mode=nonstrict
+    ports:
+      - "10000:10000"   # HiveServer2 JDBC
+      - "10002:10002"   # UI
+    volumes:
+      - ./:/nexo
+
+  hbase:
+    image: harisekhon/hbase:2.1
+    container_name: nexo-hbase
+    hostname: hbase
+    profiles: ["hadoop"]
+    restart: unless-stopped
+    ports:
+      - "16010:16010"   # UI HBase Master
+    volumes:
+      - ./:/nexo
+
+  # ---------------------------------------------------------------- nosql
+  cassandra:
+    image: cassandra:5
+    container_name: nexo-cassandra
+    profiles: ["cassandra"]
+    restart: unless-stopped
+    ports:
+      - "${CASSANDRA_PORT:-9042}:9042"
+    environment:
+      MAX_HEAP_SIZE: 768M
+      HEAP_NEWSIZE: 128M
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+      - ./:/nexo
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe keyspaces' >/dev/null 2>&1 || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 20
+
+  neo4j:
+    image: neo4j:5-community
+    container_name: nexo-neo4j
+    profiles: ["neo4j"]
+    restart: unless-stopped
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:?definir en .env}
+      NEO4J_server_memory_heap_max__size: 1G
+    volumes:
+      - neo4j_data:/data
+      - ./data:/var/lib/neo4j/import
+      - ./:/nexo
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p \"$${NEO4J_AUTH#neo4j/}\" 'RETURN 1' >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
 volumes:
   mysql_data:
   mongo_data:
+  minio_data:
   cassandra_data:
   neo4j_data:
-  minio_data:
