@@ -42,8 +42,9 @@ LIMIT 5;
 //    mucho más seguido de lo esperable (los 3 pares del triángulo con z >= 2.5)
 MATCH (a:Rider)-[x:INICIO_SINCRONIZADO]-(b:Rider)-[y:INICIO_SINCRONIZADO]-(c:Rider)-[z:INICIO_SINCRONIZADO]-(a)
 WHERE a.rider_id < b.rider_id AND b.rider_id < c.rider_id
-RETURN a.rider_id, b.rider_id, c.rider_id, [x.veces, y.veces, z.veces] AS co_inicios, [x.z, y.z, z.z] AS z
-ORDER BY x.z + y.z + z.z DESC;
+WITH a, b, c, [x.veces, y.veces, z.veces] AS co_inicios, [x.z, y.z, z.z] AS zs, x.z + y.z + z.z AS z_total
+RETURN a.rider_id, b.rider_id, c.rider_id, co_inicios, zs, z_total
+ORDER BY z_total DESC;
 
 // 4b) Pares más sospechosos (sin triángulo): para revisar a mano
 MATCH (a:Rider)-[s:INICIO_SINCRONIZADO]->(b:Rider)

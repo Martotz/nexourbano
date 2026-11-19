@@ -12,6 +12,7 @@ for f in schema load queries; do
   echo; echo "################ $f.cql ################"
   # cqlsh -f sigue después de un error: así quedan registrados los errores del anti-patrón
   cqlsh -f /nexo/07-cassandra/$f.cql
+  if [ "$f" = schema ]; then cqlsh -e "DESCRIBE TABLE nexo.lecturas_vehiculo"; fi
 done
 echo; echo "# Distribución: en qué token/nodo cae cada partición (vehicle_id) — muestra"
 cqlsh -e "SELECT DISTINCT vehicle_id, token(vehicle_id) FROM nexo.lecturas_vehiculo LIMIT 8;"

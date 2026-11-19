@@ -22,4 +22,3 @@ CREATE TABLE lecturas_vehiculo (
   AND default_time_to_live = 7776000   -- 90 días: la telemetría vieja se va sola (TTL)
   AND compaction = {'class': 'TimeWindowCompactionStrategy', 'compaction_window_unit': 'DAYS', 'compaction_window_size': 1};
 
-DESCRIBE TABLE lecturas_vehiculo;
