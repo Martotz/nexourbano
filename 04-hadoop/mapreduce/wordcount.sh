@@ -2,6 +2,7 @@
 # M5 · WordCount (MapReduce sobre YARN) de tickets de soporte + menciones sociales. Corre en hadoop-edge.
 #   docker compose exec -T hadoop-edge bash /nexo/04-hadoop/mapreduce/wordcount.sh
 set -euo pipefail
+export HADOOP_HOME="${HADOOP_HOME:-/opt/hadoop}"   # la imagen apache/hadoop no lo define
 LOG=/nexo/evidence/hadoop/wordcount.log
 OUT_LOCAL=/nexo/04-hadoop/mapreduce/output
 exec > >(tee "$LOG") 2>&1
