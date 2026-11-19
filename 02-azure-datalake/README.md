@@ -13,5 +13,5 @@
 URI Bronze: `abfss://bronze@<cuenta>.dfs.core.windows.net/viajes/yyyy/mm/dd/viajes.csv` (pegar la real en el README raíz).
 
 ## MinIO (plan B, siempre corre)
-`minio-init` crea `bronze/silver/gold`; el mismo script sube con el mismo layout → `evidence/azure/listado_minio.log`.
+El mismo script crea `bronze/silver/gold` y sube con el mismo layout → `evidence/azure/listado_minio.log`.
 Consola: http://localhost:9001. ADR: `ADR/001-datalake.md`.

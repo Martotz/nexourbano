@@ -20,7 +20,7 @@ para la región elegida; las regiones de Sudamérica son más caras que East US)
 ## Decisión
 - **Producción:** ADLS Gen2 con hierarchical namespace, contenedores `bronze`, `silver`, `gold` y layout
   `bronze/viajes/yyyy/mm/dd/`. El volumen de NexoUrbano (GB/año) entra holgado y el costo es marginal frente a operar un cluster.
-- **Sandbox del TP:** MinIO con el mismo layout (lo crea `minio-init`) como plan B y espejo local; HDFS para la parte de Hadoop.
+- **Sandbox del TP:** MinIO con el mismo layout (lo crea `subir_bronze.py`; imagen `cgr.dev/chainguard/minio` porque MinIO retiró las suyas de Docker Hub en 2026) como plan B y espejo local; HDFS para la parte de Hadoop.
 
 ## Qué cambiaría en producción Azure
 Autenticación con Managed Identity en vez de account key en `.env`; lifecycle policy que pase Bronze a Cool a los 30 días;

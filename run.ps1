@@ -65,7 +65,6 @@ function Setup {
 
     Titulo "Servicios base"
     Esperar @("mysql", "mongo", "minio", "tools")
-    DC up minio-init
 
     # 1 M viajes pesan ~160 MB; si falta o es la versión chica (250 k), se regenera (misma semilla = mismos datos)
     if (-not (Test-Path data/viajes.csv) -or (Get-Item data/viajes.csv).Length -lt 100MB) {
