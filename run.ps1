@@ -98,7 +98,14 @@ function Build-Hadoop {
 function S2-Up {
     Build-Hadoop
     Titulo "Levantando Hadoop (namenode, datanode, yarn, edge, hive, hbase)"
-    DC up -d namenode datanode resourcemanager nodemanager hadoop-edge hive hbase
+    # De a uno y con reintentos: Docker Desktop a veces falla con "mount callback failed / input/output error"
+    # cuando crea muchos contenedores a la vez a partir de imágenes recién bajadas.
+    foreach ($svc in @("namenode", "datanode", "resourcemanager", "nodemanager", "hadoop-edge", "hive", "hbase")) {
+        for ($i = 1; $i -le 3; $i++) {
+            try { DC up -d $svc; break }
+            catch { if ($i -eq 3) { throw }; Write-Host "Reintentando $svc ($i)..." -ForegroundColor Yellow; Start-Sleep -Seconds 5 }
+        }
+    }
 }
 function S2-Bootstrap { Titulo "M4 · Bootstrap"; EnServicio hadoop-edge "04-hadoop/bootstrap.sh" }
 function S2-Hdfs { Titulo "M5 · HDFS"; EnServicio hadoop-edge "04-hadoop/hdfs/hdfs_nexo.sh" }
