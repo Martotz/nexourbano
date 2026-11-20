@@ -10,7 +10,7 @@ timezone: UTC                # timestamps ISO-8601 con offset +00:00
 formato: csv
 encoding: utf-8
 separador: ","
-particionado: ts_start (yyyy/mm/dd) en el Data Lake -> bronze/viajes/yyyy/mm/dd/
+particionado: día de ingesta UTC (yyyy/mm/dd) en el Data Lake -> bronze/viajes/yyyy/mm/dd/   # la partición por fecha de viaje está en Silver (silver_viajes, columna fecha)
 clave_primaria: ride_id
 frescura_sla: batch diario 06:00 ART
 fuentes:
