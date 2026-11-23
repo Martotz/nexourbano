@@ -106,6 +106,11 @@ def main() -> None:
 
     write_table(rechazos, "silver", "silver_viajes_rechazos")
     write_table(validos, "silver", "silver_viajes", partition_by=["fecha"])
+    n_rechazos = rechazos.count()
+    pct_rechazos = 100 * n_rechazos / total
+    print(f"rechazos={n_rechazos:,} ({pct_rechazos:.2f} % de bronze, límite del contrato 3 %)")
+    if pct_rechazos > 3:
+        raise SystemExit(f"Demasiados datos rotos: {pct_rechazos:.2f} %")
     silver = read_table(spark, "silver", "silver_viajes").cache()
     n_silver = silver.count()
     print(f"silver_viajes={n_silver:,} ({100*n_silver/total:.2f} % de bronze)")
